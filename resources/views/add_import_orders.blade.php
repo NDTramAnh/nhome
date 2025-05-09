@@ -187,7 +187,7 @@
 
   <div class="action-buttons">
     <button class="btn-save">Lưu</button>
-    <button class="btn-cancel"><a href="import_orders.php">Hủy</a></button>
+    <button class="btn-cancel"><a href="import_orders.blade.php">Hủy</a></button>
   </div>
 </div>
 

@@ -168,7 +168,7 @@
     <button class="btn btn-export">Xuất phiếu</button>
     <div>
       <button class="btn btn-save">Lưu</button>
-      <button class="btn btn-cancel"><a href="import_orders.php">Hủy</a></button>
+      <button class="btn btn-cancel"><a href="import_orders.blade.php">Hủy</a></button>
     </div>
   </div>
 </div>
