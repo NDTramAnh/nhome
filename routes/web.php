@@ -36,7 +36,6 @@ Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
 
 
-
 Route::get('/', function () {
     return view('welcome');
 });
