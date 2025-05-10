@@ -112,7 +112,7 @@
         <button class="btn btn-search">Tìm kiếm</button>
       <input type="text" id="search" name="search">
     </div>
-    <button class="btn"><a href="./add_import_orders.blade.php" class="view">+ Tạo phiếu nhập</a></button>
+    <button class="btn"><a href="./add.import.orders.blade.php" class="view">+ Tạo phiếu nhập</a></button>
   </div>
 
   <table>
@@ -133,7 +133,7 @@
         <td>ABC</td>
         <td>AAA</td>
         <td>25.000.000đ</td>
-        <td class="actions"><a href="./inform_of_import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
+        <td class="actions"><a href="./inform.of.import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
       </tr>
       <tr>
         <td>HH_02</td>
@@ -141,7 +141,7 @@
         <td>ABC</td>
         <td>YYY</td>
         <td>2.900.000đ</td>
-        <td class="actions"><a href="./inform_of_import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
+        <td class="actions"><a href="./inform.of.import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
       </tr>
       <tr>
         <td>HH_03</td>
@@ -149,7 +149,7 @@
         <td>BBC</td>
         <td>ZZZ</td>
         <td>9.000.000đ</td>
-        <td class="actions"><a href="./inform_of_import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
+        <td class="actions"><a href="./inform.of.import.blade.php" class="view">Xem</a><a href="#" class="delete">Xóa</a></td>
       </tr>
     </tbody>
   </table>
