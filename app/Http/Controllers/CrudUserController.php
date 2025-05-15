@@ -21,7 +21,9 @@ class CrudUserController extends Controller
     {
         return view('users.login');
     }
-
+    public function home(){
+        return view('home');
+    }
     /**
      * User submit form login
      */
@@ -35,7 +37,7 @@ class CrudUserController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            return redirect()->intended('list')
+            return redirect()->intended('home')
                 ->withSuccess('Signed in');
         }
 
