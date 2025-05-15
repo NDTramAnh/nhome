@@ -27,6 +27,7 @@ Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
+Route::get('home', [CrudUserController::class, 'home']);
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
