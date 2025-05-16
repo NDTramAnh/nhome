@@ -20,9 +20,9 @@
                                 <th>{{ $user->name }}</th>
                                 <th>{{ $user->email }}</th>
                                 <th>
-                                    <a href="{{ route('user.readUser', ['id' => $user->id]) }}">View</a> |
-                                    <a href="{{ route('user.updateUser', ['id' => $user->id]) }}">Edit</a> |
-                                    <a href="{{ route('user.deleteUser', ['id' => $user->id]) }}">Delete</a>
+                                    <a href="{{ route('users.readUser', ['id' => $user->id]) }}">View</a> |
+                                    <a href="{{ route('users.updateUser', ['id' => $user->id]) }}">Edit</a> |
+                                    <a href="{{ route('users.deleteUser', ['id' => $user->id]) }}">Delete</a>
                                 </th>
                             </tr>
                         @endforeach

@@ -17,24 +17,26 @@ use App\Http\Controllers\CrudUserController;
 Route::get('dashboard', [CrudUserController::class, 'dashboard']);
 
 Route::get('login', [CrudUserController::class, 'login'])->name('login');
-Route::post('login', [CrudUserController::class, 'authUser'])->name('user.authUser');
+Route::post('login', [CrudUserController::class, 'authUser'])->name('users.authUser');
 
-Route::get('create', [CrudUserController::class, 'createUser'])->name('user.createUser');
-Route::post('create', [CrudUserController::class, 'postUser'])->name('user.postUser');
+Route::get('create', [CrudUserController::class, 'createUser'])->name('users.createUser');
+Route::post('create', [CrudUserController::class, 'postUser'])->name('users.postUser');
 
 
-Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
+Route::get('list', [CrudUserController::class, 'listUser'])->name('users.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
 Route::get('home', [CrudUserController::class, 'home']);
 
-Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
-Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
+Route::get('thong-ke', [CrudUserController::class, 'thongKe'])->name('thongke');
 
-Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('user.postUpdateUser');
+Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('users.readUser');
+Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('users.updateUser');
 
-Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
+Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('users.postUpdateUser');
+
+Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('users.deleteUser');
 
 
 
