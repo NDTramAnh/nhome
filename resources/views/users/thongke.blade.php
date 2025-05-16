@@ -13,17 +13,20 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="ton" role="tabpanel">
-            <div class="d-flex mb-3">
-                <input type="text" class="form-control w-25 me-2" placeholder="Search">
-                <select class="form-select w-25 me-2">
-                    <option>Trạng thái tồn</option>
-                    <option>Hết hàng</option>
-                    <option>Sắp hết</option>
-                    <option>Trung bình</option>
-                    <option>Còn nhiều</option>
+            <form method="GET" class="d-flex mb-3">
+                <input type="text" name="search" class="form-control w-25 me-2" placeholder="Search" value="{{ request('search') }}">
+
+                <select name="filter" class="form-select w-25 me-2" onchange="this.form.submit()">
+                    <option value="">Trạng thái tồn</option>
+                    <option value="Hết hàng" {{ request('filter') == 'Hết hàng' ? 'selected' : '' }}>Hết hàng</option>
+                    <option value="Sắp hết" {{ request('filter') == 'Sắp hết' ? 'selected' : '' }}>Sắp hết</option>
+                    <option value="Trung bình" {{ request('filter') == 'Trung bình' ? 'selected' : '' }}>Trung bình</option>
+                    <option value="Còn nhiều" {{ request('filter') == 'Còn nhiều' ? 'selected' : '' }}>Còn nhiều</option>
                 </select>
+
                 <button class="btn btn-primary">Xuất</button>
-            </div>
+            </form>
+
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
