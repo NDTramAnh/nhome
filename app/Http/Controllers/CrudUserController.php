@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Hash;
 use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
+
 
 /**
  * CRUD User controller
@@ -14,10 +16,6 @@ use Illuminate\Support\Facades\Auth;
 class CrudUserController extends Controller
 {
 
-    public function thongKe()
-    {
-        return view('users.thongke');
-    }
     /**
      * Login page
      */
@@ -73,7 +71,7 @@ class CrudUserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password)
         ]);
 
         return redirect("login")->withSuccess('Registration successful! Please log in.');

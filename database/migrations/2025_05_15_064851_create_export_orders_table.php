@@ -17,6 +17,7 @@ return new class extends Migration
         $table->unsignedBigInteger('id_customer');
         $table->decimal('total_price', 10, 2)->default(0.00);
         $table->timestamp('create_at')->useCurrent();
+       
     });
     }
 

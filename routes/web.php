@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
+use App\Http\Controllers\CrudTKController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,7 @@ Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
 Route::get('home', [CrudUserController::class, 'home']);
 
-Route::get('thong-ke', [CrudUserController::class, 'thongKe'])->name('thongke');
+Route::get('/thong-ke', [CrudTKController::class, 'thongKe'])->name('thongke');
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('users.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('users.updateUser');

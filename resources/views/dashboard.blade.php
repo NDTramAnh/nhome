@@ -18,9 +18,48 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-</nav>
-@yield('content')
 
+
+    
+</nav>
+
+<div class="container-fluid p-0">
+    <div class="row m-0">
+        {{-- Sidebar --}}
+        <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link active" href="home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Import_Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Export_Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Suppliers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="thong-ke">Inventory_Report</a>
+                </li>
+            </ul>
+        </div>
+
+        {{-- Content --}}
+        <div class="col-md-9 py-4 px-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+               @yield('content')
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

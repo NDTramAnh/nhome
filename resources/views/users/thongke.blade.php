@@ -1,7 +1,7 @@
 @extends('dashboard')
 
 @section('content')
-<div class="container">
+<div class="container pe-0">
     <h2 class="mb-4">Thống kê hàng hóa</h2>
     <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -31,23 +31,24 @@
                         <th>Tên hàng</th>
                         <th>Nhà cung cấp</th>
                         <th>Số lượng</th>
-                        <th>Trạng thái</th>
-                        <th>Tỷ lệ đầy tủ</th>
-                        <th>Tỷ lệ hài lòng</th>
+                        <th>Trạng thái tồn</th>
+                        <th>Tỷ lệ tiêu thụ</th>
+                        <th>Tỷ lệ hòa vốn</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 1; $i <= 10; $i++)
-                        <tr>
-                            <td>HH0{{ $i }}</td>
-                            <td>AAA</td>
-                            <td>ABC</td>
-                            <td>{{ rand(0, 300) }}</td>
-                            <td>{{ ['Hết hàng','Sắp hết','Trung bình','Còn nhiều'][rand(0,3)] }}</td>
-                            <td>{{ rand(50,100) }}%</td>
-                            <td>{{ rand(50,100) }}%</td>
-                        </tr>
-                    @endfor
+                    @foreach ($baoCaoTon as $item)
+                    <tr>
+                        <td>{{ $item['ma'] }}</td>
+                        <td>{{ $item['ten'] }}</td>
+                        <td>{{ $item['ncc'] }}</td>
+                        <td>{{ $item['soLuong'] }}</td>
+                        <td>{{ $item['trangThai'] }}</td>
+                        <td>{{ $item['tyLeTieuThu'] }}</td>
+                        <td>{{ $item['tyLeHoaVon'] }}</td>
+                    </tr>
+                    @endforeach
+
                 </tbody>
             </table>
         </div>
@@ -69,8 +70,7 @@
         type: 'bar',
         data: {
             labels: ['AAA', 'BBB', 'CCC', 'AAA', 'BBB', 'CCC'],
-            datasets: [
-                {
+            datasets: [{
                     label: 'Số lượng nhập',
                     data: [120, 180, 90, 160, 110, 130],
                     backgroundColor: 'rgba(54, 162, 235, 0.7)'
