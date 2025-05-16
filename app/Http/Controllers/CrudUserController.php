@@ -154,12 +154,13 @@ class CrudUserController extends Controller
 
     public function listUser()
     {
-        if (!Auth::check()) {
-            return redirect('login')->withErrors(['auth_error' => 'You need to log in first']);
+        if (Auth::check()) {
+            // $users = User::all();//Lay tat ca du lieu trong ban user
+            $users = User::paginate(10);
+            return view('users.list', ['users' => $users]); //->with('i',(request()->input('page',1)-1)*2);
         }
 
-        $users = User::all();
-        return view('users.list', ['users' => $users]);
+        return redirect("login")->withSuccess('You are not allowed to access');
     }
 
 

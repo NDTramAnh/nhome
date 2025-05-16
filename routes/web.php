@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
-Route::get('home', [CrudUserController::class, 'home']);
+Route::get('home', [CrudUserController::class, 'home'])->name('home');
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
@@ -36,7 +37,7 @@ Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
 
-
+Route::get('role', [RoleController::class, 'role'])->name('user.role');
 
 Route::get('/', function () {
     return view('welcome');
