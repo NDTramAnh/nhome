@@ -37,7 +37,7 @@
                     <a class="nav-link" href="#">Inventory_Report</a>
                 </li>
                 <li class="nav-item">
-                        <a class="nav-link" href="{{ route('signout') }}">Log out</a>
+                        <a class="nav-link" href="{{ route('signout') }}" onclick="return confirm('Bạn có muốn đăng xuất không?')">Log out</a>
                     </li>
             </ul>
         </div>
@@ -80,7 +80,7 @@
                             <td>
                                 <a href="{{ route('user.readUser', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View</a> |
                                 <a href="{{ route('user.updateUser', ['id' => $user->id]) }}" class="btn btn-warning btn-sm">Edit</a> |
-                                <a href="{{ route('user.deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{{ route('user.deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xoá không?')">Delete</a>
                             </td>
                         </tr>
                     @endforeach
