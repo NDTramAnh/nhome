@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
-Route::get('home', [CrudUserController::class, 'home']);
+Route::get('/home', [CrudUserController::class, 'home'])->name('home');
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
@@ -35,6 +36,15 @@ Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user
 Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('user.postUpdateUser');
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
+// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+// Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+// Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+// Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products/print', [ProductController::class, 'printPDF'])->name('products.print');
+Route::resource('products', ProductController::class);
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
 
 

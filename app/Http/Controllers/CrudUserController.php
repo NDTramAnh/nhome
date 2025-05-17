@@ -43,6 +43,9 @@ class CrudUserController extends Controller
 
         return redirect("login")->withSuccess('Login details are not valid');
     }
+    public function product(){
+        return view('product');
+    }
 
 
 
