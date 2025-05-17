@@ -14,8 +14,8 @@ class ProductController extends Controller
 
     if ($request->has('search')) {
         $search = $request->input('search');
-        $query->where('id_product', 'like', "%$search%")
-              ->orWhere('name_product', 'like', "%$search%");
+        $query
+              ->Where('name_product', 'like', "%$search%");
     }
 
     $products = $query->paginate(10);  // hoặc all() nếu ít dữ liệu

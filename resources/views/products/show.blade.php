@@ -1,111 +1,56 @@
-<!DOCTYPE html>
-<html lang="vi">
+@extends('dashboard')
 
-<head>
-    <meta charset="UTF-8" />
-    <title>Chi tiết sản phẩm</title>
-    <style>
-    body {
-        font-family: Arial, sans-serif;
-        padding: 20px;
-        background-color: #f9f9f9;
-    }
+@section('title', 'Chi tiết sản phẩm')
 
-    .container {
-        max-width: 600px;
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        border: 1px solid #2196f3;
-        margin: auto;
-    }
+@section('content')
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
 
-    h2 {
-        color: #6a1b9a;
-        font-style: italic;
-        margin-bottom: 20px;
-    }
+      <h2 class="text-center mb-4" style="color: #6a1b9a; font-style: italic;">Chi tiết sản phẩm</h2>
 
-    .field-label {
-        font-weight: bold;
-        margin-top: 10px;
-    }
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tên sản phẩm:</label>
+            <div>{{ $product->name_product }}</div>
+          </div>
 
-    .field-value {
-        margin-bottom: 10px;
-    }
+          <div class="mb-3">
+            <label class="form-label fw-bold">Danh mục:</label>
+            <div>{{ $product->category }}</div>
+          </div>
 
-    a.back-link {
-        display: inline-block;
-        margin-top: 20px;
-        color: #2196f3;
-        text-decoration: none;
-        font-weight: bold;
-    }
+          <div class="mb-3">
+            <label class="form-label fw-bold">Số lượng trong kho:</label>
+            <div>{{ $product->stock_quantity }}</div>
+          </div>
 
-    a.back-link:hover {
-        text-decoration: underline;
-    }
-    @media print {
-      body {
-        margin: 0;
-        padding: 0;
-      }
+          <div class="mb-3">
+            <label class="form-label fw-bold">Giá tiền:</label>
+            <div>{{ number_format($product->price, 0, ',', '.') }} VND</div>
+          </div>
 
-      .container {
-        page-break-inside: avoid;
-        break-inside: avoid;
-        max-height: 100vh; /* hoặc: max-height: 1000px */
-        overflow: hidden;
-      }
-
-      a.back-link, button, nav, .no-print {
-        display: none !important;
-      }
-    }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <h2>Chi tiết sản phẩm</h2>
-
-        <div>
-            <div class="field-label">Tên sản phẩm:</div>
-            <div class="field-value">{{ $product->name_product }}</div>
-        </div>
-
-        <div>
-            <div class="field-label">Danh mục:</div>
-            <div class="field-value">{{ $product->category }}</div>
-        </div>
-
-        <div>
-            <div class="field-label">Số lượng trong kho:</div>
-            <div class="field-value">{{ $product->stock_quantity }}</div>
-        </div>
-
-        <div>
-            <div class="field-label">Giá tiền:</div>
-            <div class="field-value">{{ number_format($product->price, 0, ',', '.') }} VND</div>
-        </div>
-
-        <div>
-            <div class="field-label">Tình trạng:</div>
-            <div class="field-value">
-                @if($product->status == '1')
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tình trạng:</label>
+            <div>
+              @if($product->status == '1')
                 Còn hàng
-                @elseif($product->status == '0')
+              @elseif($product->status == '0')
                 Hết hàng
-                @elseif($product->status == '2')
+              @elseif($product->status == '2')
                 Tạm ngưng bán
-                @else
+              @else
                 Không xác định
-                @endif
+              @endif
             </div>
-        </div>
-        <a href="{{ route('products.index') }}" class="back-link">← Quay lại danh sách sản phẩm</a>
-    </div>
-</body>
+          </div>
 
-</html>
+          <a href="{{ route('products.index') }}" class="btn btn-link mt-3">← Quay lại danh sách sản phẩm</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+@endsection

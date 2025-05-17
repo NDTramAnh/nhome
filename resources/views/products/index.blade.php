@@ -105,7 +105,7 @@
                 <div class="col-md-6 d-flex">
                     <form action="{{ route('products.index') }}" method="GET" class="d-flex w-100">
                         <input type="text" name="search" class="form-control me-2"
-                            placeholder="Tìm mã hoặc tên sản phẩm" value="{{ request('search') }}">
+                            placeholder="Tìm tên sản phẩm" value="{{ request('search') }}">
                         <button class="btn btn-primary">Tìm</button>
                     </form>
                 </div>
