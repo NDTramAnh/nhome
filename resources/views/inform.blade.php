@@ -6,7 +6,7 @@
     {{-- Sidebar --}}
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
       <ul class="nav flex-column mt-4">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
