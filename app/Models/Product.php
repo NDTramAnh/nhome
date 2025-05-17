@@ -6,26 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    public $timestamps = true; // Nếu bạn dùng $table->timestamps()
-
     protected $primaryKey = 'id_product';
 
     protected $fillable = [
-        'code',
         'name_product',
         'category',
-        'description',
         'stock_quantity',
         'price',
         'status',
-        'user_id', // ✅ Đảm bảo có dòng này
+        'user_id',
+        'create_at',
+        'update_at',
     ];
-    public function getRouteKeyName()
-    {
-        return 'id_product';
-    }
+
+   protected $casts = [
+    'create_at' => 'datetime',
+    'update_at' => 'datetime',
+];
+
+    public $timestamps = false; // Vì bạn dùng create_at & update_at custom, không phải created_at, updated_at
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    
 }

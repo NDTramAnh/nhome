@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Sửa sản phẩm</title>
+  <title>Cập nhật sản phẩm</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -10,20 +10,18 @@
       padding: 20px;
     }
     .container {
-  max-width: 600px;
-  width: 90%; /* co giãn tốt trên màn nhỏ */
-  background: white;
-  padding: 30px 25px;
-  border-radius: 10px;
-  border: 1px solid #2196f3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  /* Căn giữa màn hình */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+      max-width: 600px;
+      width: 90%;
+      background: white;
+      padding: 30px 25px;
+      border-radius: 10px;
+      border: 1px solid #2196f3;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
     h2 {
       color: #6a1b9a;
       font-style: italic;
@@ -36,7 +34,7 @@
       color: #333;
     }
     input[type="text"],
-    textarea,
+    input[type="number"],
     select {
       width: 100%;
       padding: 8px 10px;
@@ -74,7 +72,7 @@
 <body>
   <div class="container">
     <a href="{{ route('products.index') }}" class="back-link">← Quay lại danh sách</a>
-    <h2>Sửa sản phẩm</h2>
+    <h2>Cập nhật sản phẩm</h2>
 
     @if ($errors->any())
       <div style="color: red; margin-bottom: 15px;">
@@ -90,30 +88,24 @@
       @csrf
       @method('PUT')
 
-      <label for="code">Mã sản phẩm</label>
-      <input type="text" id="code" name="code" value="{{ old('code', $product->code) }}" required />
-
       <label for="name_product">Tên sản phẩm</label>
       <input type="text" id="name_product" name="name_product" value="{{ old('name_product', $product->name_product) }}" required />
 
       <label for="category">Danh mục</label>
       <input type="text" id="category" name="category" value="{{ old('category', $product->category) }}" required />
 
-      <label for="description">Mô tả</label>
-      <textarea id="description" name="description" rows="3">{{ old('description', $product->description) }}</textarea>
-
       <label for="stock_quantity">Số lượng trong kho</label>
-      <input type="text" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" required pattern="\d+" title="Chỉ nhập số" />
+      <input type="number" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" required min="0" />
 
       <label for="price">Giá tiền (VND)</label>
-      <input type="text" id="price" name="price" value="{{ old('price', $product->price) }}" required pattern="\d+" title="Chỉ nhập số" />
+      <input type="number" step="0.01" id="price" name="price" value="{{ old('price', $product->price) }}" required min="0" />
 
       <label for="status">Tình trạng</label>
       <select id="status" name="status" required>
         <option value="">-- Chọn tình trạng --</option>
-        <option value="Còn hạn sử dụng" {{ old('status', $product->status) == 'Còn hạn sử dụng' ? 'selected' : '' }}>Còn hạn sử dụng</option>
-        <option value="Hết hạn" {{ old('status', $product->status) == 'Hết hạn' ? 'selected' : '' }}>Hết hạn</option>
-        <option value="Tạm ngưng bán" {{ old('status', $product->status) == 'Tạm ngưng bán' ? 'selected' : '' }}>Tạm ngưng bán</option>
+        <option value="1" {{ (old('status', $product->status) == '1') ? 'selected' : '' }}>Còn hàng</option>
+        <option value="0" {{ (old('status', $product->status) == '0') ? 'selected' : '' }}>Hết hàng</option>
+        <option value="2" {{ (old('status', $product->status) == '2') ? 'selected' : '' }}>Tạm ngưng bán</option>
       </select>
 
       <button type="submit">Cập nhật</button>
