@@ -9,16 +9,29 @@ class ExportOrderDetail extends Model
     protected $table = 'export_order_details'; // tên bảng
 
     protected $fillable = [
-        'id',
-        'id_export',      // khóa ngoại liên kết với export_orders.id_export
-        'id_product',   // mã sản phẩm         
+        'id_export',    
+        'id_product',           
         'quantity', 
-          'price',      // số lượng
+          'price',      
         'subtotal', 
-        'id-customer',      // thành tiền
+        'id_customer',     
         'created_at',
-        'id_user',     // ngày nhập (nếu là created_at)
+        'id_user',     
     ];
 
     public $timestamps = true;
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'id_product');
+    }
+
+    public function exportOrder()
+    {
+        return $this->belongsTo(ExportOrder::class, 'id_export');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

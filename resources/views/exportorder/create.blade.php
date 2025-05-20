@@ -6,22 +6,6 @@
 
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('.select2').select2({
-            placeholder: "Tìm mã hoặc tên sản phẩm",
-            allowClear: true
-        });
-    });
-</script>
-<select name="products[0][product_code]" class="form-control select2" required>
-    <option value="">-- Chọn sản phẩm --</option>
-    @foreach ($products as $product)
-        <option value="{{ $product->code }}">
-            {{ $product->code }} - {{ $product->name }}
-        </option>
-    @endforeach
-</select>
 
 @extends('home')
 
@@ -30,7 +14,20 @@
 
 <form action="{{ route('exportorder.store') }}" method="POST">
     @csrf
-    <div class="row">
+    <div>
+        <p>Sản Phẩm</p>
+    </div>
+
+    <select id="product-selector" name="products[0][product_code]" class="form-control select2" required>
+        <option value="">-- Chọn sản phẩm --</option>
+        @foreach ($products as $product)
+        <option value="{{ $product->id_product }}">
+            {{ $product->id_product }} - {{ $product->name_product }}
+        </option>
+        @endforeach
+    </select>
+
+    <div class="row mt-3">
         <!-- Bảng sản phẩm của phiếu xuất -->
         <div class="col-md-8">
             <table class="table table-bordered">
@@ -51,14 +48,10 @@
                 </tbody>
             </table>
 
-            <div class="mb-2">
-                <button type="button" class="btn btn-sm btn-success" id="add-row">Thêm sản phẩm</button>
-            </div>
-
             <div class="text-end fw-bold">Total: <span id="total-value">0</span></div>
         </div>
 
-        <!--form nhập thông tin phiếu xuất-->
+        <!-- Form nhập thông tin phiếu xuất -->
         <div class="col-md-4">
             <div class="mb-2">
                 <label>Mã phiếu</label>
@@ -72,12 +65,12 @@
 
             <div class="mb-2">
                 <label>Ngày tạo</label>
-                <input type="date" name="ngay_tao" class="form-control" required>
+                <input type="date" name="ngay_tao" class="form-control" required value="{{ date('Y-m-d') }}">
             </div>
 
             <div class="mb-2">
                 <label>Người tạo</label>
-                <input type="text" name="nguoi_tao" class="form-control" required>
+                <input type="text" name="nguoi_tao" class="form-control" required value="{{ Auth::user()->name ?? '' }}" readonly>
             </div>
 
             <input type="hidden" name="tri_gia" id="tri_gia">
@@ -88,53 +81,86 @@
     </div>
 </form>
 
-<!-- Script thêm/xoá sản phẩm + tính tổng -->
 <script>
-    let count = 0;
-    const productList = document.getElementById('product-list');
-    const totalEl = document.getElementById('total-value');
-    const hiddenTotal = document.getElementById('tri_gia');
+    $(document).ready(function() {
+        // Khởi tạo select2
+        $('.select2').select2({
+            placeholder: "Tìm mã hoặc tên sản phẩm",
+            allowClear: true
+        });
 
-    document.getElementById('add-row').addEventListener('click', function () {
-        count++;
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${count}</td>
-            <td><input type="text" name="products[${count}][code]" class="form-control" required></td>
-            <td><input type="text" name="products[${count}][name]" class="form-control" required></td>
-            <td><input type="text" name="products[${count}][unit]" class="form-control" required></td>
-            <td><input type="number" name="products[${count}][price]" class="form-control price" required></td>
-            <td><input type="number" name="products[${count}][quantity]" class="form-control quantity" required></td>
-            <td class="subtotal">0</td>
-            <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
-        `;
-        productList.appendChild(row);
-        calculateTotal();
-    });
+        // Gán mảng products sang biến JS an toàn
+        const products = JSON.parse('{!! addslashes(json_encode($products)) !!}');
+        let count = 0;
 
-    productList.addEventListener('input', function () {
-        calculateTotal();
-    });
+        // Xử lý khi chọn sản phẩm
+        $('#product-selector').on('change', function() {
+            const selectedId = $(this).val();
+            const product = products.find(p => p.id_product == selectedId);
+            if (!product) return;
 
-    productList.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-row')) {
-            e.target.closest('tr').remove();
+            count++;
+
+            // Kiểm tra sản phẩm đã tồn tại chưa, tránh thêm trùng
+            let exists = false;
+            $('#product-list tr').each(function() {
+                const code = $(this).find('input[name^="products"]').filter(function() {
+                    return $(this).attr('name').endsWith('[code]');
+                }).val();
+                if (code == product.id_product) {
+                    exists = true;
+                    return false; // break loop
+                }
+            });
+            if (exists) {
+                alert('Sản phẩm này đã được thêm.');
+                return;
+            }
+
+            const row = `
+                <tr>
+                    <td>${count}</td>
+                    <td><input type="text" class="form-control" name="products[${count}][code]" value="${product.id_product}" readonly></td>
+                    <td><input type="text" class="form-control" name="products[${count}][name]" value="${product.name_product}" readonly></td>
+                    <td><input type="text" class="form-control" name="products[${count}][unit]" value="${product.category}" readonly></td>
+                    <td><input type="number" class="form-control price" name="products[${count}][price]" value="${product.price}" readonly></td>
+                    <td><input type="number" class="form-control quantity" name="products[${count}][quantity]" value="1" min="1"></td>
+                    <td class="subtotal">${product.price.toLocaleString()}</td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
+                </tr>
+            `;
+
+            $('#product-list').append(row);
             calculateTotal();
+        });
+
+        // Cập nhật thành tiền & tổng khi thay đổi số lượng
+        $('#product-list').on('input', '.quantity', function() {
+            calculateTotal();
+        });
+
+        // Xoá dòng sản phẩm
+        $('#product-list').on('click', '.remove-row', function() {
+            $(this).closest('tr').remove();
+            calculateTotal();
+        });
+
+        // Hàm tính tổng tiền
+        function calculateTotal() {
+            let total = 0;
+
+            $('#product-list tr').each(function() {
+                const price = parseFloat($(this).find('.price').val()) || 0;
+                const quantity = parseFloat($(this).find('.quantity').val()) || 0;
+                const subtotal = price * quantity;
+
+                $(this).find('.subtotal').text(subtotal.toLocaleString());
+                total += subtotal;
+            });
+
+            $('#total-value').text(total.toLocaleString());
+            $('#tri_gia').val(total); // Gán giá trị tổng tiền vào input ẩn
         }
     });
-
-    function calculateTotal() {
-        let total = 0;
-        const rows = productList.querySelectorAll('tr');
-        rows.forEach(row => {
-            const price = parseFloat(row.querySelector('.price')?.value || 0);
-            const quantity = parseFloat(row.querySelector('.quantity')?.value || 0);
-            const subtotal = price * quantity;
-            row.querySelector('.subtotal').textContent = subtotal.toLocaleString();
-            total += subtotal;
-        });
-        totalEl.textContent = total.toLocaleString();
-        hiddenTotal.value = total;
-    }
 </script>
 @endsection
