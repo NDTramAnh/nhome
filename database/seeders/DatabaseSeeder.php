@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -19,7 +20,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-// call seeder
+
+        // call seeder
         $this->call([
             CategoriesSeeder::class,
             UsersSeeder::class,
@@ -28,7 +30,7 @@ class DatabaseSeeder extends Seeder
             ImportOrdersSeeder::class,
             ImportOrdersDetailSeeder::class,
             ExportOrdersSeeder::class,
-            ExportOdersDetailsSeeder::class,
+            ExportOrdersDetailsSeeder::class,
         ]);
     }
 }
