@@ -100,6 +100,31 @@ class CrudTKController extends Controller
             ]);
         }
 
+        if ($request->input('tab') === 'xuathang') {
+            $month = $request->input('month') ?? now()->format('Y-m');
+
+            $tongPhieuXuat = DB::table('export_orders')
+                ->whereMonth('create_at', Carbon::parse($month)->month)
+                ->whereYear('create_at', Carbon::parse($month)->year)
+                ->count();
+
+            $tongSoLuongXuat = DB::table('export_orders_details')
+                ->join('export_orders', 'export_orders_details.id_export', '=', 'export_orders.id_export')
+                ->whereMonth('export_orders.create_at', Carbon::parse($month)->month)
+                ->whereYear('export_orders.create_at', Carbon::parse($month)->year)
+                ->sum('export_orders_details.quantity');
+
+            return view('users.thongke', [
+                'tab' => 'xuathang',
+                'tongPhieuXuat' => $tongPhieuXuat,
+                'tongSoLuongXuat' => $tongSoLuongXuat,
+                'baoCaoTon' => $baoCaoTon,
+                'dates' => $dates->toArray(),
+                'importValues' => $importValues->toArray(),
+                'exportValues' => $exportValues->toArray(),
+            ]);
+        }
+
         return view('users.thongke', [
             'baoCaoTon' => $baoCaoTon,
             'dates' => $dates->toArray(),
