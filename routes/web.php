@@ -52,5 +52,13 @@ Route::get('/inventory-report', [HomeController::class, 'inventoryReport'])->nam
 
 // 
 Route::get('/exportorder', [ExportOrderController::class, 'index'])->name('exportorder.index');
-Route::get('/exportorder/create', [ExportOrderController::class, 'create'])->name('exportorder.create');
+
+Route::get('/exportorder/create', [ExportOrderController::class, 'create'])
+    ->middleware('auth')
+    ->name('exportorder.create');
+Route::get('/export-orders', [ExportOrderController::class, 'index'])->name('export.orders');
 Route::post('/exportorder/store', [ExportOrderController::class, 'store'])->name('exportorder.store');
+Route::get('/exportorder/{id}', [ExportOrderController::class, 'show'])->name('exportorder.show');
+Route::delete('/exportorder/{id}', [ExportOrderController::class, 'destroy'])->name('exportorder.destroy');
+Route::get('/exportorder/{id}/print', [ExportOrderController::class, 'print'])->name('exportorder.print');
+

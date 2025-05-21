@@ -14,9 +14,8 @@ class ExportOrder extends Model
 
    
     protected $fillable = [
-        'id_export',
-        'customer',
-        'creator',
+        'id_customer',
+        'id_user',
         'created_at',
         'total_price',
     ];
@@ -28,5 +27,9 @@ class ExportOrder extends Model
     public function details()
     {
         return $this->hasMany(ExportOrderDetail::class, 'id_export');
+    }
+     public function orderDetails()
+    {
+        return $this->hasMany(ExportOrderDetail::class, 'id_export', 'id');
     }
 }

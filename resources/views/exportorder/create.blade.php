@@ -18,15 +18,15 @@
         <p>Sản Phẩm</p>
     </div>
 
-    <select id="product-selector" name="products[0][product_code]" class="form-control select2" required>
+    <select id="product-selector" class="form-control select2">
         <option value="">-- Chọn sản phẩm --</option>
         @foreach ($products as $product)
-        <option value="{{ $product->id_product }}">
-            {{ $product->id_product }} - {{ $product->name_product }}
+        <option value="{{ $product->id }}">
+            {{ $product->id }} - {{ $product->name }}
         </option>
         @endforeach
     </select>
-
+    
     <div class="row mt-3">
         <!-- Bảng sản phẩm của phiếu xuất -->
         <div class="col-md-8">
@@ -44,7 +44,7 @@
                     </tr>
                 </thead>
                 <tbody id="product-list">
-                    <!-- Hàng mẫu để thêm sản phẩm -->
+                   
                 </tbody>
             </table>
 
@@ -55,11 +55,11 @@
         <div class="col-md-4">
             <div class="mb-2">
                 <label>Mã phiếu</label>
-                <input type="text" name="ma_phieu" class="form-control" required>
+                <input type="text" name="ma_phieu" class="form-control" required value="{{ $nextId }}" readonly>
             </div>
 
             <div class="mb-2">
-                <label>Mã khách hàng</label>
+                <label>Tên khách hàng</label>
                 <input type="text" name="khach_hang" class="form-control" required>
             </div>
 
@@ -80,75 +80,24 @@
         </div>
     </div>
 </form>
-
 <script>
     $(document).ready(function() {
-        // Khởi tạo select2
         $('.select2').select2({
             placeholder: "Tìm mã hoặc tên sản phẩm",
             allowClear: true
         });
 
-        // Gán mảng products sang biến JS an toàn
         const products = JSON.parse('{!! addslashes(json_encode($products)) !!}');
         let count = 0;
 
-        // Xử lý khi chọn sản phẩm
-        $('#product-selector').on('change', function() {
-            const selectedId = $(this).val();
-            const product = products.find(p => p.id_product == selectedId);
-            if (!product) return;
-
-            count++;
-
-            // Kiểm tra sản phẩm đã tồn tại chưa, tránh thêm trùng
-            let exists = false;
-            $('#product-list tr').each(function() {
-                const code = $(this).find('input[name^="products"]').filter(function() {
-                    return $(this).attr('name').endsWith('[code]');
-                }).val();
-                if (code == product.id_product) {
-                    exists = true;
-                    return false; // break loop
-                }
+        function updateRowNumbers() {
+            $('#product-list tr').each(function(index) {
+                $(this).find('td:first').text(index + 1);
             });
-            if (exists) {
-                alert('Sản phẩm này đã được thêm.');
-                return;
-            }
+        }
 
-            const row = `
-                <tr>
-                    <td>${count}</td>
-                    <td><input type="text" class="form-control" name="products[${count}][code]" value="${product.id_product}" readonly></td>
-                    <td><input type="text" class="form-control" name="products[${count}][name]" value="${product.name_product}" readonly></td>
-                    <td><input type="text" class="form-control" name="products[${count}][unit]" value="${product.category}" readonly></td>
-                    <td><input type="number" class="form-control price" name="products[${count}][price]" value="${product.price}" readonly></td>
-                    <td><input type="number" class="form-control quantity" name="products[${count}][quantity]" value="1" min="1"></td>
-                    <td class="subtotal">${product.price.toLocaleString()}</td>
-                    <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
-                </tr>
-            `;
-
-            $('#product-list').append(row);
-            calculateTotal();
-        });
-
-        // Cập nhật thành tiền & tổng khi thay đổi số lượng
-        $('#product-list').on('input', '.quantity', function() {
-            calculateTotal();
-        });
-
-        // Xoá dòng sản phẩm
-        $('#product-list').on('click', '.remove-row', function() {
-            $(this).closest('tr').remove();
-            calculateTotal();
-        });
-
-        // Hàm tính tổng tiền
         function calculateTotal() {
             let total = 0;
-
             $('#product-list tr').each(function() {
                 const price = parseFloat($(this).find('.price').val()) || 0;
                 const quantity = parseFloat($(this).find('.quantity').val()) || 0;
@@ -159,8 +108,60 @@
             });
 
             $('#total-value').text(total.toLocaleString());
-            $('#tri_gia').val(total); // Gán giá trị tổng tiền vào input ẩn
+            $('#tri_gia').val(total);
         }
+
+        $('#product-selector').on('change', function() {
+            const selectedId = $(this).val();
+            const product = products.find(p => p.id == selectedId);
+            if (!product) return;
+
+            // Kiểm tra sản phẩm đã tồn tại chưa, tránh thêm trùng
+            let exists = false;
+            $('#product-list tr').each(function() {
+                const code = $(this).find('input[name$="[code]"]').val();
+                if (code == product.id) {
+                    exists = true;
+                    return false;
+                }
+            });
+            if (exists) {
+                alert('Sản phẩm này đã được thêm.');
+                return;
+            }
+
+            const row = `
+                <tr>
+                    <td></td>
+                    <td><input type="text" class="form-control" name="products[${count}][code]" value="${product.id}" readonly></td>
+                    <td><input type="text" class="form-control" name="products[${count}][name]" value="${product.name}" readonly></td>
+                    <td><input type="text" class="form-control" name="products[${count}][unit]" value="${product.category}" readonly></td>
+                    <td><input type="number" class="form-control price" name="products[${count}][price]" value="${product.price}" readonly></td>
+                    <td><input type="number" class="form-control quantity" name="products[${count}][quantity]" value="1" min="1"></td>
+                    <td class="subtotal">${product.price.toLocaleString()}</td>
+                    <td><button type="button" class="btn btn-danger btn-sm remove-row">X</button></td>
+                </tr>
+            `;
+
+            $('#product-list').append(row);
+            count++;
+
+            updateRowNumbers();
+            calculateTotal();
+
+
+            $(this).val(null).trigger('change');
+        });
+
+        $('#product-list').on('input', '.quantity', function() {
+            calculateTotal();
+        });
+
+        $('#product-list').on('click', '.remove-row', function() {
+            $(this).closest('tr').remove();
+            updateRowNumbers();
+            calculateTotal();
+        });
     });
 </script>
 @endsection

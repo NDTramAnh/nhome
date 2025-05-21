@@ -16,7 +16,7 @@ class ExportOdersDetailsSeeder extends Seeder
          DB::table('export_order_details')->insert([
             [
                 'id_export' => 1,
-                'id_product' => 1,        // Sản phẩm 1
+                'product_id' => 1,        
                 'quantity' => 2,
                 'price' => 75.25,
                 'subtotal' => 150.50,
@@ -27,7 +27,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 2,
-                'id_product' => 2,
+                'product_id' => 2,
                 'quantity' => 1,
                 'price' => 230.00,
                 'subtotal' => 230.00,
@@ -38,7 +38,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 3,
-                'id_product' => 3,
+                'product_id' => 3,
                 'quantity' => 5,
                 'price' => 100.15,
                 'subtotal' => 500.75,
@@ -49,7 +49,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 4,
-                'id_product' => 4,
+                'product_id' => 4,
                 'quantity' => 4,
                 'price' => 80.00,
                 'subtotal' => 320.00,
@@ -60,7 +60,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 5,
-                'id_product' => 5,
+                'product_id' => 5,
                 'quantity' => 1,
                 'price' => 100.99,
                 'subtotal' => 100.99,
@@ -71,7 +71,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 6,
-                'id_product' => 6,
+                'product_id' => 6,
                 'quantity' => 3,
                 'price' => 250.00,
                 'subtotal' => 750.00,
@@ -82,7 +82,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 7,
-                'id_product' => 7,
+                'product_id' => 7,
                 'quantity' => 2,
                 'price' => 210.15,
                 'subtotal' => 420.30,
@@ -93,7 +93,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 8,
-                'id_product' => 8,
+                'product_id' => 8,
                 'quantity' => 4,
                 'price' => 70.10,
                 'subtotal' => 280.40,
@@ -104,7 +104,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 9,
-                'id_product' => 9,
+                'product_id' => 9,
                 'quantity' => 2,
                 'price' => 305.10,
                 'subtotal' => 610.20,
@@ -115,7 +115,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 10,
-                'id_product' => 10,
+                'product_id' => 10,
                 'quantity' => 2,
                 'price' => 95.00,
                 'subtotal' => 190.00,
@@ -126,7 +126,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 11,
-                'id_product' => 11,
+                'product_id' => 11,
                 'quantity' => 4,
                 'price' => 112.70,
                 'subtotal' => 450.80,
@@ -137,7 +137,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 12,
-                'id_product' => 12,
+                'product_id' => 12,
                 'quantity' => 2,
                 'price' => 190.35,
                 'subtotal' => 380.70,
@@ -148,7 +148,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 13,
-                'id_product' => 13,
+                'product_id' => 13,
                 'quantity' => 2,
                 'price' => 110.00,
                 'subtotal' => 220.00,
@@ -159,7 +159,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 14,
-                'id_product' => 14,
+                'product_id' => 14,
                 'quantity' => 3,
                 'price' => 110.00,
                 'subtotal' => 330.00,
@@ -170,7 +170,7 @@ class ExportOdersDetailsSeeder extends Seeder
             ],
             [
                 'id_export' => 15,
-                'id_product' => 15,
+                'product_id' => 15,
                 'quantity' => 2,
                 'price' => 70.25,
                 'subtotal' => 140.50,
