@@ -30,7 +30,7 @@
                     <option value="Còn nhiều" {{ request('filter') == 'Còn nhiều' ? 'selected' : '' }}>Còn nhiều</option>
                 </select>
 
-                 <a href="{{ route('thongke') }}" class="btn btn-primary">Reset</a>
+                <a href="{{ route('thongke') }}" class="btn btn-primary">Reset</a>
 
                 {{-- Nút xuất tạm thời --}}
                 <button type="button" class="btn btn-outline-danger text-danger">Xuất Excel</button>
@@ -63,43 +63,68 @@
                 </tbody>
             </table>
         </div>
+
+
         <div class="tab-pane fade" id="nhapxuat" role="tabpanel">
-            <div class="d-flex align-items-center mb-3">
+            <form method="GET" class="d-flex align-items-center mb-3" action="{{ route('thongke') }}">
+                <input type="hidden" name="tab" value="nhapxuat">
                 <label class="me-2">Tháng:</label>
-                <input type="month" class="form-control w-25">
-            </div>
+                <input type="month" name="month" class="form-control w-25 me-2" value="{{ request('month') }}">
+                <button type="submit" class="btn btn-primary">Lọc</button>
+            </form>
+
+            @if (empty($dates) || empty($importValues) || empty($exportValues))
+            <div class="alert alert-warning">Không có dữ liệu để hiển thị biểu đồ.</div>
+            @else
             <canvas id="chartNhapXuat" height="150"></canvas>
+            @endif
+
         </div>
+
+
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('chartNhapXuat').getContext('2d');
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['AAA', 'BBB', 'CCC', 'AAA', 'BBB', 'CCC'],
-            datasets: [{
-                    label: 'Số lượng nhập',
-                    data: [120, 180, 90, 160, 110, 130],
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)'
+    document.addEventListener('DOMContentLoaded', function() {
+        const tab = '{{ request("tab") }}';
+        if (tab === 'nhapxuat') {
+            const nhapxuatTab = new bootstrap.Tab(document.querySelector('#nhapxuat-tab'));
+            nhapxuatTab.show();
+        }
+        const labels = @json($dates);
+        const importValues = @json($importValues);
+        const exportValues = @json($exportValues);
+
+        if (labels.length && importValues.length && exportValues.length) {
+            const ctx = document.getElementById('chartNhapXuat').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                            label: 'Số lượng nhập',
+                            data: importValues,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)'
+                        },
+                        {
+                            label: 'Số lượng xuất',
+                            data: exportValues,
+                            backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                        }
+                    ]
                 },
-                {
-                    label: 'Số lượng xuất',
-                    data: [100, 150, 60, 140, 90, 110],
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+            });
         }
     });
 </script>

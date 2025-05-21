@@ -9,6 +9,8 @@ use App\Models\ExportOrdersDetail;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -47,6 +49,32 @@ class CrudTKController extends Controller
         })->values();
 
 
-        return view('users.thongke', compact('baoCaoTon'));
+        $month = $request->input('month', now()->format('Y-m')); // lấy theo tháng hoặc mặc định tháng hiện tại
+
+        $dates = collect(range(1, Carbon::parse($month)->daysInMonth))->map(function ($day) use ($month) {
+            return Carbon::parse($month)->day($day)->format('Y-m-d');
+        });
+
+        $importValues = $dates->map(function ($date) {
+            return DB::table('import_orders_detail')
+                ->join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+                ->whereDate('import_orders.import_date', $date)
+                ->sum('import_orders_detail.quantity');
+        });
+
+        $exportValues = $dates->map(function ($date) {
+            return DB::table('export_orders_details')
+                ->join('export_orders', 'export_orders_details.id_export', '=', 'export_orders.id_export')
+                ->whereDate('export_orders.create_at', $date)
+                ->sum('export_orders_details.quantity');
+        });
+
+        return view('users.thongke', [
+            'baoCaoTon'    => $baoCaoTon,
+            'dates'        => $dates->toArray(),
+            'importValues' => $importValues->toArray(),
+            'exportValues' => $exportValues->toArray(),
+            'tab'          => $request->input('tab'),
+        ]);
     }
 }
