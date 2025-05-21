@@ -8,10 +8,15 @@
             <button class="nav-link active" id="ton-tab" data-bs-toggle="tab" data-bs-target="#ton" type="button" role="tab">Báo cáo hàng tồn</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="nhapxuat-tab" data-bs-toggle="tab" data-bs-target="#nhapxuat" type="button" role="tab">Thống kê nhập xuất</button>
+            <button class="nav-link" id="nhaphang-tab" data-bs-toggle="tab" data-bs-target="#nhaphang" type="button" role="tab">Thống kê nhập hàng</button>
+        </li>
+
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="nhapxuat-tab" data-bs-toggle="tab" data-bs-target="#nhapxuat" type="button" role="tab">Biểu đồ nhập xuất</button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
+        <!-- hàng hóa -->
         <div class="tab-pane fade show active" id="ton" role="tabpanel">
 
             <form method="GET" action="{{ route('thongke') }}" class="d-flex gap-3 mb-3 align-items-center">
@@ -64,7 +69,26 @@
             </table>
         </div>
 
+        <!--nhập hàng -->
+        <div class="tab-pane fade" id="nhaphang" role="tabpanel">
+            <!-- form chọn ngày -->
+            <form method="GET" action="{{ route('thongke') }}" class="d-flex gap-3 align-items-center mb-3">
+                <input type="hidden" name="tab" value="nhaphang">
+                <label>Chọn thời gian:</label>
+                <input type="month" name="month" class="form-control w-25" value="{{ request('month', now()->format('Y-m')) }}">
+                <button type="submit" class="btn btn-primary">Lọc</button>
+            </form>
 
+            <!-- kết quả -->
+            <div>
+                <p><strong>Tổng số phiếu nhập:</strong> {{ $tongPhieuNhap ?? 'Không có dữ liệu' }}</p>
+                <p><strong>Tổng số lượng hàng nhập:</strong> {{ $tongSoLuongNhap ?? 'Không có dữ liệu' }}</p>
+                <p><strong>Tổng giá trị nhập hàng:</strong> {{ isset($tongGiaTriNhap) ? number_format($tongGiaTriNhap) . ' đ' : 'Không có dữ liệu' }}</p>
+            </div>
+        </div>
+
+
+        <!-- biểu đồ -->
         <div class="tab-pane fade" id="nhapxuat" role="tabpanel">
             <form method="GET" class="d-flex align-items-center mb-3" action="{{ route('thongke') }}">
                 <input type="hidden" name="tab" value="nhapxuat">
@@ -90,10 +114,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const tab = '{{ request("tab") }}';
+
         if (tab === 'nhapxuat') {
-            const nhapxuatTab = new bootstrap.Tab(document.querySelector('#nhapxuat-tab'));
-            nhapxuatTab.show();
+            new bootstrap.Tab(document.querySelector('#nhapxuat-tab')).show();
+        } else if (tab === 'nhaphang') {
+            new bootstrap.Tab(document.querySelector('#nhaphang-tab')).show();
         }
+
         const labels = @json($dates);
         const importValues = @json($importValues);
         const exportValues = @json($exportValues);

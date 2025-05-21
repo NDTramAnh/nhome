@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Product;
+use App\Models\ImportOrder;
 use App\Models\ImportOrdersDetail;
 use App\Models\ExportOrdersDetail;
 use Illuminate\Support\Facades\Session;
@@ -20,6 +21,7 @@ class CrudTKController extends Controller
 {
     public function thongKe(Request $request)
     {
+        // Lấy dữ liệu sản phẩm
         $products = Product::all();
         $filter = $request->input('filter');
         $keyword = $request->input('keyword');
@@ -41,16 +43,14 @@ class CrudTKController extends Controller
             ];
         });
 
-        // Kết hợp tìm kiếm và lọc nếu có
         $baoCaoTon = $baoCaoTon->filter(function ($item) use ($keyword, $filter) {
             $matchKeyword = !$keyword || stripos($item['ten'], $keyword) !== false || stripos($item['ma'], $keyword) !== false;
             $matchFilter = !$filter || $item['trangThai'] === $filter;
             return $matchKeyword && $matchFilter;
         })->values();
 
-
-        $month = $request->input('month', now()->format('Y-m')); // lấy theo tháng hoặc mặc định tháng hiện tại
-
+        // Dữ liệu biểu đồ nhập/xuất
+        $month = $request->input('month', now()->format('Y-m'));
         $dates = collect(range(1, Carbon::parse($month)->daysInMonth))->map(function ($day) use ($month) {
             return Carbon::parse($month)->day($day)->format('Y-m-d');
         });
@@ -69,12 +69,42 @@ class CrudTKController extends Controller
                 ->sum('export_orders_details.quantity');
         });
 
+        // Nếu đang ở tab "nhập hàng"
+        if ($request->input('tab') === 'nhaphang') {
+            $month = $request->input('month') ?? now()->format('Y-m');
+
+            $tongPhieuNhap = ImportOrder::whereMonth('import_date', Carbon::parse($month)->month)
+                ->whereYear('import_date', Carbon::parse($month)->year)
+                ->count();
+
+            $tongSoLuongNhap = ImportOrdersDetail::join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+                ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
+                ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
+                ->sum('import_orders_detail.quantity');
+
+            $tongGiaTriNhap = ImportOrdersDetail::join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+                ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
+                ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
+                ->sum(DB::raw('quantity * price'));
+
+
+            return view('users.thongke', [
+                'tab' => 'nhaphang',
+                'tongPhieuNhap' => $tongPhieuNhap,
+                'tongSoLuongNhap' => $tongSoLuongNhap,
+                'tongGiaTriNhap' => $tongGiaTriNhap,
+                'baoCaoTon' => $baoCaoTon,
+                'dates' => $dates->toArray(),
+                'importValues' => $importValues->toArray(),
+                'exportValues' => $exportValues->toArray(),
+            ]);
+        }
+
         return view('users.thongke', [
-            'baoCaoTon'    => $baoCaoTon,
-            'dates'        => $dates->toArray(),
+            'baoCaoTon' => $baoCaoTon,
+            'dates' => $dates->toArray(),
             'importValues' => $importValues->toArray(),
             'exportValues' => $exportValues->toArray(),
-            'tab'          => $request->input('tab'),
         ]);
     }
 }
