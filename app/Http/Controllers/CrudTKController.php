@@ -20,39 +20,32 @@ class CrudTKController extends Controller
     {
         $products = Product::all();
         $filter = $request->input('filter');
+        $keyword = $request->input('keyword');
 
         $baoCaoTon = $products->map(function ($product) {
             $tonKho = $product->stock_quantity;
-
-            // Tính tổng đã nhập
             $tongNhap = ImportOrdersDetail::where('id_product', $product->id_product)->sum('quantity');
-
-            // Tính tổng đã bán
             $tongBan = ExportOrdersDetail::where('id_product', $product->id_product)->sum('quantity');
-
-            // Tính tỷ lệ tiêu thụ
             $tiLeTieuThu = $tongNhap > 0 ? round(($tongBan / $tongNhap) * 100) : 0;
-
-            // Giả định: nếu có bán thì hòa vốn, chưa có thì không
-            $tiLeHoaVon = $tongBan > 0 ? rand(70, 100) : rand(30, 60); // tuỳ chỉnh logic sau
-
             $trangThai = $tonKho == 0 ? 'Hết hàng' : ($tonKho < 20 ? 'Sắp hết' : ($tonKho < 100 ? 'Trung bình' : 'Còn nhiều'));
 
             return [
                 'ma' => 'HH0' . $product->id_product,
                 'ten' => $product->name_product,
-                'ncc' => 'ABC', // sau cập nhật thêm quan hệ nếu có
+                'ncc' => 'ABC',
                 'soLuong' => $tonKho,
                 'trangThai' => $trangThai,
                 'tyLeTieuThu' => $tiLeTieuThu . '%',
-                'tyLeHoaVon' => $tiLeHoaVon . '%',
             ];
         });
 
-        // Áp dụng lọc nếu có chọn
-        if ($filter) {
-            $baoCaoTon = $baoCaoTon->where('trangThai', $filter)->values();
-        }
+        // Kết hợp tìm kiếm và lọc nếu có
+        $baoCaoTon = $baoCaoTon->filter(function ($item) use ($keyword, $filter) {
+            $matchKeyword = !$keyword || stripos($item['ten'], $keyword) !== false || stripos($item['ma'], $keyword) !== false;
+            $matchFilter = !$filter || $item['trangThai'] === $filter;
+            return $matchKeyword && $matchFilter;
+        })->values();
+
 
         return view('users.thongke', compact('baoCaoTon'));
     }

@@ -13,10 +13,16 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="ton" role="tabpanel">
-            <form method="GET" class="d-flex mb-3">
-                <input type="text" name="search" class="form-control w-25 me-2" placeholder="Search" value="{{ request('search') }}">
 
-                <select name="filter" class="form-select w-25 me-2" onchange="this.form.submit()">
+            <form method="GET" action="{{ route('thongke') }}" class="d-flex gap-3 mb-3 align-items-center">
+                {{-- Tìm theo tên sản phẩm --}}
+                <input type="text" name="keyword" class="form-control w-25" placeholder="Tìm theo tên hoặc mã sản phẩm" value="{{ request('keyword') }}">
+
+                {{-- Nút tìm kiếm --}}
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+
+                {{-- Dropdown lọc tự động --}}
+                <select name="filter" class="form-select w-25" onchange="this.form.submit()">
                     <option value="">Trạng thái tồn</option>
                     <option value="Hết hàng" {{ request('filter') == 'Hết hàng' ? 'selected' : '' }}>Hết hàng</option>
                     <option value="Sắp hết" {{ request('filter') == 'Sắp hết' ? 'selected' : '' }}>Sắp hết</option>
@@ -24,7 +30,11 @@
                     <option value="Còn nhiều" {{ request('filter') == 'Còn nhiều' ? 'selected' : '' }}>Còn nhiều</option>
                 </select>
 
-                <button class="btn btn-primary">Xuất</button>
+                 <a href="{{ route('thongke') }}" class="btn btn-primary">Reset</a>
+
+                {{-- Nút xuất tạm thời --}}
+                <button type="button" class="btn btn-outline-danger text-danger">Xuất Excel</button>
+
             </form>
 
             <table class="table table-bordered table-striped">
@@ -36,7 +46,6 @@
                         <th>Số lượng</th>
                         <th>Trạng thái tồn</th>
                         <th>Tỷ lệ tiêu thụ</th>
-                        <th>Tỷ lệ hòa vốn</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +57,6 @@
                         <td>{{ $item['soLuong'] }}</td>
                         <td>{{ $item['trangThai'] }}</td>
                         <td>{{ $item['tyLeTieuThu'] }}</td>
-                        <td>{{ $item['tyLeHoaVon'] }}</td>
                     </tr>
                     @endforeach
 
