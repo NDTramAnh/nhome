@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExportOrderDetail extends Model
 {
-    protected $table = 'export_order_details'; // tên bảng
+    protected $table = 'export_order_details'; 
 
     protected $fillable = [
         'id_export',

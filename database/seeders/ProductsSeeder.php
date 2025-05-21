@@ -13,12 +13,6 @@ class ProductsSeeder extends Seeder
     public function run(): void
     {
         DB::table('products')->insert([
-<<<<<<< HEAD
-            ['name_product' => 'Sữa rửa mặt CeraVe', 'id_category' => '1', 'price' => 250000.00, 'stock_quantity' => 50, 'status' => 1],
-            ['name_product' => 'Kem dưỡng ẩm La Roche', 'id_category' => '2', 'price' => 450000.00, 'stock_quantity' => 30, 'status' => 1],
-            ['name_product' => 'Serum Vitamin C', 'id_category' => '3', 'price' => 380000.00, 'stock_quantity' => 20, 'status' => 1],
-            ['name_product' => 'Kem chống nắng Anessa', 'id_category' => '4', 'price' => 500000.00, 'stock_quantity' => 40, 'status' => 1],
-=======
             ['name' => 'Sữa rửa mặt dịu nhẹ', 'category' => 'Skincare', 'price' => 150000, 'quantity' => 50, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Kem dưỡng ẩm ban ngày', 'category' => 'Skincare', 'price' => 250000, 'quantity' => 40, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Tinh chất chống lão hóa', 'category' => 'Skincare', 'price' => 400000, 'quantity' => 30, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
@@ -34,7 +28,6 @@ class ProductsSeeder extends Seeder
             ['name' => 'Kem mắt giảm thâm', 'category' => 'Skincare', 'price' => 320000, 'quantity' => 20, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Xịt khoáng dưỡng ẩm', 'category' => 'Skincare', 'price' => 150000, 'quantity' => 60, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Tẩy tế bào chết dịu nhẹ', 'category' => 'Skincare', 'price' => 180000, 'quantity' => 30, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
->>>>>>> export-order
         ]);
     }
 }

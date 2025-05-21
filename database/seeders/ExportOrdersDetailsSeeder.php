@@ -13,13 +13,6 @@ class ExportOrdersDetailsSeeder extends Seeder
      */
     public function run(): void
     {
-<<<<<<< HEAD:database/seeders/ExportOrdersDetailsSeeder.php
-        DB::table('export_orders_details')->insert([
-            ['id_export' => 1, 'id_product' => 5, 'quantity' => 10, 'price' => 250000.00],
-            ['id_export' => 2, 'id_product' => 3, 'quantity' => 5, 'price' => 180000.00],
-            ['id_export' => 3, 'id_product' => 7, 'quantity' => 8, 'price' => 320000.00],
-            ['id_export' => 4, 'id_product' => 2, 'quantity' => 15, 'price' => 150000.00],
-=======
          DB::table('export_order_details')->insert([
             [
                 'id_export' => 1,
@@ -186,7 +179,6 @@ class ExportOrdersDetailsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
->>>>>>> export-order:database/seeders/ExportOdersDetailsSeeder.php
         ]);
     }
 }
