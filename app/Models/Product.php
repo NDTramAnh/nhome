@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Models;
+<<<<<<< HEAD
 use App\Models\Category;
+=======
+
+>>>>>>> export-order
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+<<<<<<< HEAD
     // protected $primaryKey = 'id_product';
     public $timestamps = false;
 
@@ -30,5 +35,13 @@ class Product extends Model
     public function exportDetails()
     {
         return $this->hasMany(ExportOrdersDetail::class, 'id_product');
+=======
+     protected $fillable = ['name', 'category', 'price', 'quantity', 'status'];
+    public $timestamps = true;
+
+    public function exportOrderDetails()
+    {
+        return $this->hasMany(ExportOrderDetail::class, 'id_product');
+>>>>>>> export-order
     }
 }

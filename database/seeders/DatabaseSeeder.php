@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+<<<<<<< HEAD
 
         $this->call([
         CategoriesSeeder::class,
@@ -30,6 +31,19 @@ class DatabaseSeeder extends Seeder
         ExportOrdersSeeder::class,
         ExportOrdersDetailsSeeder::class,
     ]);
+=======
+// call seeder
+        $this->call([
+            CategoriesSeeder::class,
+            UsersSeeder::class,
+            SuppliersSeeder::class,
+            ProductsSeeder::class,
+            ImportOrdersSeeder::class,
+            ImportOrdersDetailSeeder::class,
+            ExportOrdersSeeder::class,
+            ExportOdersDetailsSeeder::class,
+        ]);
+>>>>>>> export-order
     }
     
 }
