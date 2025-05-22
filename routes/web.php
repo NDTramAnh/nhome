@@ -3,9 +3,14 @@
 use App\Http\Controllers\ImportOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
+<<<<<<< HEAD
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExportOrderController;
 use App\Http\Controllers\CrudTKController;
+=======
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SupplierController;
+>>>>>>> import_crud
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -30,28 +35,46 @@ Route::get('list', [CrudUserController::class, 'listUser'])->name('users.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
-Route::get('home', [CrudUserController::class, 'home']);
+
+
+Route::get('home', [CrudUserController::class, 'home'])->name('home');
+
 
 Route::get('/thong-ke', [CrudTKController::class, 'thongKe'])->name('thongke');
 
 Route::get('addImport', [ImportOrderController::class, 'create'])->name('addImport.page');
 
-Route::get('import', [CrudUserController::class, 'import'])->name('import.page');
-Route::get('inform', [CrudUserController::class, 'informip'])->name('inform.page');
+Route::get('import', [ImportOrderController::class, 'import'])->name('import.page');
+Route::get('inform', [ImportOrderController::class, 'informip'])->name('inform.page');
 Route::post('/import-orders/store', [ImportOrderController::class, 'store'])->name('import.store');
 Route::get('/import-orders', [ImportOrderController::class, 'index'])->name('import.page');
 Route::post('/import-orders', [ImportOrderController::class, 'store'])->name('import.store');
 Route::get('/import-orders/{id}', [ImportOrderController::class, 'show'])->name('import.show');
 Route::delete('/import-orders/{id}', [ImportOrderController::class, 'destroy'])->name('import.delete');
+Route::get('/import-orders/{id}/export', [ImportOrderController::class, 'export'])->name('import.export');
+Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
 
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('users.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('users.updateUser');
 
+<<<<<<< HEAD
 Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('users.postUpdateUser');
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('users.deleteUser');
+=======
+Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
+// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+// Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+// Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+// Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+Route::get('/products/print', [ProductController::class, 'printPDF'])->name('products.print');
+Route::resource('products', ProductController::class);
+Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+>>>>>>> import_crud
 
 
 Route::get('/', function () {

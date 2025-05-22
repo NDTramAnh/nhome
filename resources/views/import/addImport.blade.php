@@ -6,12 +6,12 @@
     {{-- Sidebar --}}
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
       <ul class="nav flex-column mt-4">
-      <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
+      <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route(name: 'products.index') }}">Product</a></li>
       <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Inventory_Report</a></li>
       </ul>
     </div>
@@ -91,6 +91,7 @@
 
         <div class="form-row d-flex align-items-center mt-4 justify-content-end">
         <button type="submit" class="btn btn-primary">Thêm</button>
+        <a href="{{ route('import.page') }}" class="btn btn-danger">Quay lại</a>
         </div>
       </form>
 

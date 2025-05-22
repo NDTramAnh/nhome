@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('export_order_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_export');
-            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('id_product');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->decimal('subtotal', 10, 2);
@@ -24,7 +24,8 @@ return new class extends Migration
 
             // khóa ngoại
             $table->foreign('id_export')->references('id')->on('export_orders')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+           $table->foreign('id_product')->references('id_product')->on('products')->onDelete('cascade');
+
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }
