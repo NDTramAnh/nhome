@@ -5,15 +5,30 @@
     <div class="row">
     {{-- Sidebar --}}
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
-      <ul class="nav flex-column mt-4">
-      <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Inventory_Report</a></li>
-      </ul>
+        <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}" href="{{ route('product') }}">Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}" href="{{ route('import.orders') }}">Import_Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}" href="{{ route('export.orders') }}">Export_Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers') }}">Suppliers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
+                </li>
+                
+            </ul>
     </div>
 
     {{-- Main Content --}}
