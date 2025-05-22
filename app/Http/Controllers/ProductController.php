@@ -10,17 +10,15 @@ class ProductController extends Controller
 {
     public function index(Request $request)
 {
-    $query = Product::where('user_id', auth()->id());
+     $query = Product::query();
 
-    if ($request->filled('search')) {
+    if ($request->has('search')) {
         $search = $request->input('search');
-        $query->where(function ($q) use ($search) {
-            $q->where('name_product', 'like', "%{$search}%")
-              ->orWhere('code', 'like', "%{$search}%");
-        });
+        $query
+              ->Where('name_product', 'like', "%$search%");
     }
 
-    $products = $query->get();
+    $products = $query->paginate(10);  // hoặc all() nếu ít dữ liệu
 
     return view('products.index', compact('products'));
 }
@@ -33,22 +31,27 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'code' => 'required|string|unique:products,code',
-            'name_product' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'stock_quantity' => 'required|integer',
-            'price' => 'required|numeric',
-            'status' => 'required|string',
-        ]);
-    
-        // ✅ Gán user_id TRƯỚC khi tạo sản phẩm
-        $data['user_id'] = auth()->id();
-    
-        // ✅ Bây giờ mới tạo
-        Product::create($data);
-    
-        return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
+          'name_product' => 'required|string|unique:products,name_product',
+        'category' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'stock_quantity' => 'required|integer',
+        'price' => 'required|numeric',
+        'status' => 'required|string',
+    ]);
+
+    $data['user_id'] = auth()->id();
+
+    // Thêm thời gian tạo và cập nhật theo tên cột trong database
+    $now = now();
+    $data['create_at'] = $now;
+    $data['update_at'] = $now;
+
+    Product::create(array_merge(
+        $request->all(),
+        ['user_id' => auth()->id()]
+    ));
+
+    return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
     }
 
     public function edit(Product $product)
@@ -58,19 +61,17 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
-        $request->validate([
-            'code' => 'required|string|max:255',
-            'name_product' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|string',
-            'price' => 'required|numeric',
-            'stock_quantity' => 'required|integer',
-            'category' => 'required|string|max:255',
-        ]);
+        $validated = $request->validate([
+        'name_product' => 'required|string|max:255',
+        'status' => 'required|in:0,1,2',  // chỉ 3 giá trị hợp lệ
+        'price' => 'required|numeric',
+        'stock_quantity' => 'required|integer',
+        'category' => 'required|string|max:255',
+    ]);
 
-        $product->update($request->all());
+    $product->update($validated);
 
-        return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
+    return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
     }
 
     public function destroy(Product $product)

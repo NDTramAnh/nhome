@@ -8,21 +8,20 @@ return new class extends Migration {
     public function up(): void
     {
         
-        Schema::create('products', function (Blueprint $table) {
-            $table->id('id_product'); // nếu bạn đặt tên id là id_product
-            $table->string('code')->unique();
-            $table->string('name_product');
-            $table->string('category');
-            $table->integer('stock_quantity');
-            $table->integer('price');
-            $table->string('status');
-            $table->text('description')->nullable();
-            $table->timestamps();
+       Schema::create('products', function (Blueprint $table) {
+            $table->id('id_product');
+            $table->string('name_product', 225);
+            $table->string('category', 225);
+            $table->decimal('price', 10, 2);
+            $table->integer('stock_quantity')->default(0);
+           $table->timestamp('created_at')->useCurrent();
+$table->timestamp('updated_at')->useCurrent();
+            $table->integer('status')->default(1);
         });
     }
-
     public function down(): void
     {
         Schema::dropIfExists('products');
     }
 };
+
