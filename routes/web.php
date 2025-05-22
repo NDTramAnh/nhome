@@ -4,7 +4,7 @@ use App\Http\Controllers\ImportOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
 use App\Http\Controllers\ProductController;
-
+use App\Http\Controllers\SupplierController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,21 +29,22 @@ Route::get('list', [CrudUserController::class, 'listUser'])->name('user.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 
-<<<<<<< HEAD
-Route::get('/home', [CrudUserController::class, 'home'])->name('home');
-=======
+
+
 Route::get('home', [CrudUserController::class, 'home'])->name('home');
->>>>>>> import
+
 
 Route::get('addImport', [ImportOrderController::class, 'create'])->name('addImport.page');
 
-Route::get('import', [CrudUserController::class, 'import'])->name('import.page');
-Route::get('inform', [CrudUserController::class, 'informip'])->name('inform.page');
+Route::get('import', [ImportOrderController::class, 'import'])->name('import.page');
+Route::get('inform', [ImportOrderController::class, 'informip'])->name('inform.page');
 Route::post('/import-orders/store', [ImportOrderController::class, 'store'])->name('import.store');
 Route::get('/import-orders', [ImportOrderController::class, 'index'])->name('import.page');
 Route::post('/import-orders', [ImportOrderController::class, 'store'])->name('import.store');
 Route::get('/import-orders/{id}', [ImportOrderController::class, 'show'])->name('import.show');
 Route::delete('/import-orders/{id}', [ImportOrderController::class, 'destroy'])->name('import.delete');
+Route::get('/import-orders/{id}/export', [ImportOrderController::class, 'export'])->name('import.export');
+Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
 

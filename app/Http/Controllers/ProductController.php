@@ -18,7 +18,7 @@ class ProductController extends Controller
               ->Where('name_product', 'like', "%$search%");
     }
 
-    $products = $query->paginate(10);  // hoặc all() nếu ít dữ liệu
+    $products = $query->paginate(10); 
 
     return view('products.index', compact('products'));
 }

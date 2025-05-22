@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->engine = 'InnoDB';
-            $table->bigIncrements('id_supplier'); // Đảm bảo là PK và BIGINT UNSIGNED
+            $table->bigIncrements('id_supplier'); 
             $table->string('name_supplier');
             $table->string('phone_supplier', 10);
             $table->string('email');

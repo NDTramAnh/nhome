@@ -10,17 +10,12 @@
                     <a class="nav-link active" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-<<<<<<< HEAD
+
                 <a class="nav-link" href="{{ route('products.index') }}">Product</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="">Import_Orders</a>
-=======
-                    <a class="nav-link" href="">Product</a>
-                </li>
+                </li>  
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a>
->>>>>>> e2a497866853346a56073bd70bcec8cb42b9f88d
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Export_Orders</a>
@@ -29,7 +24,7 @@
                     <a class="nav-link" href="#">Users</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Suppliers</a>
+                    <a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Inventory_Report</a>

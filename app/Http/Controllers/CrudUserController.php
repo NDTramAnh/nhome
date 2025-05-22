@@ -25,15 +25,7 @@ class CrudUserController extends Controller
         return view('home');
     }
 
-     public function addImport(){
-        return view('addImport');
-    }
-    public function import(){
-        return view('import');
-    }
-    public function informip(){
-        return view('inform');
-    }
+     
     /**
      * User submit form login
      */
@@ -55,10 +47,6 @@ class CrudUserController extends Controller
     }
     public function product(){
         return view('product');
-    }
-    public function create()
-    {
-        return view('products.create'); // Tạo file resources/views/products/create.blade.php
     }
 
 

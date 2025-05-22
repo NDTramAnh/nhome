@@ -8,8 +8,29 @@ use App\Models\User;
 use App\Models\Supplier;
 use App\Models\ImportOrderDetail;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 class ImportOrderController extends Controller
 {
+    public function import()
+    {
+        return view('import.import');
+    }
+    public function addImport()
+    {
+        return view('import.addImport');
+    }
+    public function informip()
+    {
+        return view('import.inform');
+    }
+
+    public function export($id)
+    {
+        $order = ImportOrder::with(['supplier', 'user', 'details.product'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('import.export_pdf', compact('order'));
+        return $pdf->stream('phieu_nhap_'.$order->id_import.'.pdf');
+    }
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -20,7 +41,7 @@ class ImportOrderController extends Controller
             ->with(['user', 'supplier'])
             ->get();
 
-        return view('import', compact('importOrders'));
+        return view('import.import', compact('importOrders'));
     }
 
     public function create()
@@ -29,7 +50,7 @@ class ImportOrderController extends Controller
         $users = User::all();
         $products = Product::select('id_product', 'name_product', 'price')->get();
 
-        return view('addImport', compact('suppliers', 'users', 'products'));
+        return view('import.addImport', compact('suppliers', 'users', 'products'));
     }
 
     public function store(Request $request)
@@ -44,7 +65,7 @@ class ImportOrderController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        
+
         $importOrder = ImportOrder::create([
 
             'supplier_id' => $request->supplier_id,
@@ -53,7 +74,7 @@ class ImportOrderController extends Controller
             'import_date' => $request->import_date,
         ]);
 
-       
+
         ImportOrderDetail::create([
             'id_import' => $importOrder->id_import,
             'id_product' => $request->product_id,
@@ -61,21 +82,21 @@ class ImportOrderController extends Controller
             'price' => $request->price,
         ]);
 
-        return redirect()->route('import.page') 
+        return redirect()->route('import.page')
             ->with('success', 'Đã thêm phiếu nhập thành công!');
     }
 
     public function show($id)
     {
         $order = ImportOrder::with(['user', 'supplier', 'details.product'])->findOrFail($id);
-        return view('inform', compact('order'));
+        return view('import.inform', compact('order'));
     }
 
     public function destroy($id)
     {
         $order = ImportOrder::findOrFail($id);
-        $order->details()->delete(); 
-        $order->delete(); 
+        $order->details()->delete();
+        $order->delete();
 
         return redirect()->route('import.page')->with('success', 'Đã xóa phiếu nhập thành công!');
     }

@@ -7,11 +7,11 @@
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
       <ul class="nav flex-column mt-4">
         <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route(name: 'products.index') }}">Product</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Inventory_Report</a></li>
       </ul>
     </div>
@@ -75,7 +75,7 @@
 
         {{-- Nút hành động --}}
         <div class="d-flex justify-content-between mt-4">
-          <button class="btn btn-outline-primary">Xuất phiếu</button>
+          <a href="{{ route('import.export', $order->id_import) }}" class="btn btn-outline-primary"target="_blank">Xuất phiếu</a>
           <a href="{{ route('import.page') }}" class="btn btn-danger">Quay lại</a>
         </div>
       </div>

@@ -7,18 +7,18 @@
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
       <ul class="nav flex-column mt-4">
       <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('products.index') }}">Product</a></li>
       <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
+      <li class="nav-item"><a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a></li>
       <li class="nav-item"><a class="nav-link" href="#">Inventory_Report</a></li>
       </ul>
     </div>
 
     {{-- Main Content --}}
     <div class="col-md-10 p-4">
-  
+
 
 
       {{-- Import Orders Section --}}
@@ -26,7 +26,7 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Import Orders</h5>
         <a href="{{ route('addImport.page') }}" class="btn btn-success">+ Tạo phiếu nhập</a>
-        
+
       </div>
 
       {{-- Search Bar --}}
@@ -71,7 +71,7 @@
       @endforeach
         </tbody>
       </table>
-
+      
 
       </div>
     </div>
