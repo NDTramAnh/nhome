@@ -1,8 +1,8 @@
 @extends('dashboard')
 
 @section('content')
-<div class="container-fluid p-0">
-    <div class="row">
+<div class="container-fluid px-0">
+    <div class="row mx-0">
         {{-- Sidebar --}}
         <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
             <ul class="nav flex-column mt-4">
@@ -25,20 +25,21 @@
                     <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers') }}">Suppliers</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('inventory.report') ? 'active' : '' }}" href="{{ route('inventory.report') }}">Inventory_Report</a>
+                    <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
                 </li>
+                
             </ul>
         </div>
 
         {{-- Nội dung chính --}}
-        <div class="col-md-10 p-4">
+        <div class="col-md-10 p-4 pe-0" style="max-width: 100%; overflow-x: hidden;">
             @hasSection('main-content')
-                @yield('main-content')
+            @yield('main-content')
             @else
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4><strong>Welcome: {{ Auth::user()->name }}</strong></h4>
-                    <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4><strong>Welcome: {{ Auth::user()->name }}</strong></h4>
+                <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
+            </div>
             @endif
         </div>
     </div>
@@ -64,22 +65,27 @@
         z-index: 9999;
         animation: slideIn 0.5s ease, fadeOut 0.5s ease 3.5s forwards;
     }
+
     .custom-toast.success {
         background-color: #28a745;
     }
+
     .custom-toast.error {
         background-color: #dc3545;
     }
+
     @keyframes slideIn {
         from {
             opacity: 0;
             transform: translateX(100%);
         }
+
         to {
             opacity: 1;
             transform: translateX(0);
         }
     }
+
     @keyframes fadeOut {
         to {
             opacity: 0;
