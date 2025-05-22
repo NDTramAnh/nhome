@@ -27,26 +27,24 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('inventory.report') ? 'active' : '' }}" href="{{ route('inventory.report') }}">Inventory_Report</a>
                 </li>
-
             </ul>
         </div>
 
         {{-- Nội dung chính --}}
         <div class="col-md-10 p-4">
             @hasSection('main-content')
-            @yield('main-content') {{-- Nếu trang con có khai báo section main-content thì hiển thị ở đây --}}
+                @yield('main-content')
             @else
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4><strong>Welcome: {{ Auth::user()->name }}</strong></h4>
-                <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
-            </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><strong>Welcome: {{ Auth::user()->name }}</strong></h4>
+                    <i class="bi bi-person-fill" style="font-size: 1.5rem;"></i>
+                </div>
             @endif
         </div>
     </div>
 </div>
 
-
-<!--Thong bao-->
+{{-- Toast thông báo --}}
 @if(session('success') || session('error'))
 <div id="custom-toast" class="custom-toast {{ session('error') ? 'error' : 'success' }}">
     {{ session('success') ?? session('error') }}
@@ -66,27 +64,22 @@
         z-index: 9999;
         animation: slideIn 0.5s ease, fadeOut 0.5s ease 3.5s forwards;
     }
-
     .custom-toast.success {
         background-color: #28a745;
     }
-
     .custom-toast.error {
         background-color: #dc3545;
     }
-
     @keyframes slideIn {
         from {
             opacity: 0;
             transform: translateX(100%);
         }
-
         to {
             opacity: 1;
             transform: translateX(0);
         }
     }
-
     @keyframes fadeOut {
         to {
             opacity: 0;
@@ -96,11 +89,9 @@
 </style>
 
 <script>
-    setTimeout(function() {
+    setTimeout(() => {
         const toast = document.getElementById('custom-toast');
-        if (toast) {
-            toast.remove();
-        }
+        if (toast) toast.remove();
     }, 4000);
 </script>
 @endsection

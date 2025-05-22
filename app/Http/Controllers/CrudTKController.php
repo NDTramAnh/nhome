@@ -1,60 +1,101 @@
-<?php
+use Illuminate\Pagination\LengthAwarePaginator;
 
-namespace App\Http\Controllers;
-
-use App\Models\ExportOrderDetail;
-use App\Models\User;
-use App\Models\Product;
-use App\Models\ImportOrdersDetail;
-use App\Models\ExportOrdersDetail;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-
-/**
- * CRUD User controller
- */
-class CrudTKController extends Controller
+public function thongKe(Request $request)
 {
-    public function thongKe(Request $request)
-    {
-        $products = Product::all();
-        $filter = $request->input('filter');
+    $filter = $request->input('filter');
+    $keyword = $request->input('keyword');
+    $month = $request->input('month', now()->format('Y-m'));
+    $tab = $request->input('tab');
 
-        $baoCaoTon = $products->map(function ($product) {
-            $tonKho = $product->stock_quantity;
+    // HÀNG TỒN
+    $products = Product::all();
+    $collection = $products->map(function ($product) {
+        $tonKho = $product->quantity;
+        $tongNhap = ImportOrdersDetail::where('id_product', $product->id)->sum('quantity');
+        $tongBan = ExportOrderDetail::where('product_id', $product->id)->sum('quantity');
+        $tiLeTieuThu = $tongNhap > 0 ? round(($tongBan / $tongNhap) * 100) : 0;
+        $trangThai = $tonKho == 0 ? 'Hết hàng' : ($tonKho < 20 ? 'Sắp hết' : ($tonKho < 100 ? 'Trung bình' : 'Còn nhiều'));
 
-            // Tính tổng đã nhập
-            $tongNhap = ImportOrdersDetail::where('id_product', $product->id_product)->sum('quantity');
+        return [
+            'ma' => 'HH0' . $product->id,
+            'ten' => $product->name,
+            'ncc' => 'ABC',
+            'soLuong' => $tonKho,
+            'trangThai' => $trangThai,
+            'tyLeTieuThu' => $tiLeTieuThu . '%',
+        ];
+    });
 
-            // Tính tổng đã bán
-            $tongBan = ExportOrderDetail::where('id_product', $product->id_product)->sum('quantity');
+    // Lọc + Tìm kiếm
+    $filtered = $collection->filter(function ($item) use ($filter, $keyword) {
+        $matchKeyword = !$keyword || stripos($item['ten'], $keyword) !== false || stripos($item['ma'], $keyword) !== false;
+        $matchFilter = !$filter || $item['trangThai'] === $filter;
+        return $matchKeyword && $matchFilter;
+    })->values();
 
-            // Tính tỷ lệ tiêu thụ
-            $tiLeTieuThu = $tongNhap > 0 ? round(($tongBan / $tongNhap) * 100) : 0;
+    // PHÂN TRANG (cho Collection)
+    $page = $request->get('page', 1);
+    $perPage = 10;
+    $baoCaoTon = new LengthAwarePaginator(
+        $filtered->forPage($page, $perPage),
+        $filtered->count(),
+        $perPage,
+        $page,
+        ['path' => $request->url(), 'query' => $request->query()]
+    );
 
-            // Giả định: nếu có bán thì hòa vốn, chưa có thì không
-            $tiLeHoaVon = $tongBan > 0 ? rand(70, 100) : rand(30, 60); // tuỳ chỉnh logic sau
+    // BIỂU ĐỒ
+    $dates = collect(range(1, Carbon::parse($month)->daysInMonth))->map(function ($day) use ($month) {
+        return Carbon::parse($month)->day($day)->format('Y-m-d');
+    });
 
-            $trangThai = $tonKho == 0 ? 'Hết hàng' : ($tonKho < 20 ? 'Sắp hết' : ($tonKho < 100 ? 'Trung bình' : 'Còn nhiều'));
+    $importValues = $dates->map(function ($date) {
+        return DB::table('import_orders_detail')
+            ->join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+            ->whereDate('import_orders.import_date', $date)
+            ->sum('import_orders_detail.quantity');
+    });
 
-            return [
-                'ma' => 'HH0' . $product->id_product,
-                'ten' => $product->name_product,
-                'ncc' => 'ABC', // sau cập nhật thêm quan hệ nếu có
-                'soLuong' => $tonKho,
-                'trangThai' => $trangThai,
-                'tyLeTieuThu' => $tiLeTieuThu . '%',
-                'tyLeHoaVon' => $tiLeHoaVon . '%',
-            ];
-        });
+    $exportValues = $dates->map(function ($date) {
+        return DB::table('export_order_details')
+            ->whereDate('created_at', $date)
+            ->sum('quantity');
+    });
 
-        // Áp dụng lọc nếu có chọn
-        if ($filter) {
-            $baoCaoTon = $baoCaoTon->where('trangThai', $filter)->values();
-        }
+    // NHẬP HÀNG
+    if ($tab === 'nhaphang') {
+        $tongPhieuNhap = ImportOrder::whereMonth('import_date', Carbon::parse($month)->month)
+            ->whereYear('import_date', Carbon::parse($month)->year)
+            ->count();
 
-        return view('users.thongke', compact('baoCaoTon'));
+        $tongSoLuongNhap = ImportOrdersDetail::join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+            ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
+            ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
+            ->sum('import_orders_detail.quantity');
+
+        $tongGiaTriNhap = ImportOrdersDetail::join('import_orders', 'import_orders_detail.id_import', '=', 'import_orders.id_import')
+            ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
+            ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
+            ->sum(DB::raw('quantity * price'));
+
+        return view('users.thongke', compact('tab', 'tongPhieuNhap', 'tongSoLuongNhap', 'tongGiaTriNhap', 'baoCaoTon', 'dates', 'importValues', 'exportValues'));
     }
+
+    // XUẤT HÀNG
+    if ($tab === 'xuathang') {
+        $tongPhieuXuat = DB::table('export_orders')
+            ->whereMonth('created_at', Carbon::parse($month)->month)
+            ->whereYear('created_at', Carbon::parse($month)->year)
+            ->count();
+
+        $tongSoLuongXuat = DB::table('export_order_details')
+            ->whereMonth('created_at', Carbon::parse($month)->month)
+            ->whereYear('created_at', Carbon::parse($month)->year)
+            ->sum('quantity');
+
+        return view('users.thongke', compact('tab', 'tongPhieuXuat', 'tongSoLuongXuat', 'baoCaoTon', 'dates', 'importValues', 'exportValues'));
+    }
+
+    // MẶC ĐỊNH
+    return view('users.thongke', compact('baoCaoTon', 'dates', 'importValues', 'exportValues'));
 }

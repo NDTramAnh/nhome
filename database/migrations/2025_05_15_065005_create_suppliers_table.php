@@ -4,15 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
+<<<<<<< HEAD
               $table->id('id_supplier');
+=======
+            $table->engine = 'InnoDB';
+            $table->id('id_supplier');
+>>>>>>> import
             $table->string('name_supplier');
             $table->string('phone_supplier', 10);
             $table->string('email');

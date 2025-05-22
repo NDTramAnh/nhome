@@ -13,6 +13,7 @@ class ProductsSeeder extends Seeder
     public function run(): void
     {
         DB::table('products')->insert([
+
             ['name' => 'Sữa rửa mặt dịu nhẹ', 'category' => 'Skincare', 'price' => 150000, 'quantity' => 50, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Kem dưỡng ẩm ban ngày', 'category' => 'Skincare', 'price' => 250000, 'quantity' => 40, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Tinh chất chống lão hóa', 'category' => 'Skincare', 'price' => 400000, 'quantity' => 30, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
@@ -28,6 +29,7 @@ class ProductsSeeder extends Seeder
             ['name' => 'Kem mắt giảm thâm', 'category' => 'Skincare', 'price' => 320000, 'quantity' => 20, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Xịt khoáng dưỡng ẩm', 'category' => 'Skincare', 'price' => 150000, 'quantity' => 60, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
             ['name' => 'Tẩy tế bào chết dịu nhẹ', 'category' => 'Skincare', 'price' => 180000, 'quantity' => 30, 'created_at' => now(), 'updated_at' => now(), 'status' => 1],
+
         ]);
     }
 }
