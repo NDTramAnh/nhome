@@ -46,6 +46,10 @@ class CrudUserController extends Controller
     public function product(){
         return view('product');
     }
+    public function create()
+    {
+        return view('products.create'); // Tạo file resources/views/products/create.blade.php
+    }
 
 
 

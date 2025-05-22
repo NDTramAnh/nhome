@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->string('category', 225);
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity')->default(0);
-           $table->timestamp('created_at')->useCurrent();
-$table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('create_at')->useCurrent();
+            $table->timestamp('update_at')->useCurrent();
             $table->integer('status')->default(1);
         });
     }
