@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ExportOrderDetail;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\ImportOrdersDetail;
@@ -28,7 +29,7 @@ class CrudTKController extends Controller
             $tongNhap = ImportOrdersDetail::where('id_product', $product->id_product)->sum('quantity');
 
             // Tính tổng đã bán
-            $tongBan = ExportOrdersDetail::where('id_product', $product->id_product)->sum('quantity');
+            $tongBan = ExportOrderDetail::where('id_product', $product->id_product)->sum('quantity');
 
             // Tính tỷ lệ tiêu thụ
             $tiLeTieuThu = $tongNhap > 0 ? round(($tongBan / $tongNhap) * 100) : 0;
