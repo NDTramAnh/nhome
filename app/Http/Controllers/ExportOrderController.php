@@ -38,7 +38,7 @@ class ExportOrderController extends Controller
     // tạo mới phiếu xuất
     public function create()
     {
-        
+
         $latest = \App\Models\ExportOrder::latest('id')->first();
         $nextId = $latest ? $latest->id + 1 : 1;
 
@@ -47,41 +47,63 @@ class ExportOrderController extends Controller
     }
 
     // Lưu phiếu xuất mới
-   public function store(Request $request)
-{
-    try {
-       
-        if (!isset($request->products) || count($request->products) === 0) {
-            return redirect()->back()
-                ->withInput()
-                ->with('error', 'Bạn phải thêm ít nhất một sản phẩm vào phiếu xuất.');
-        }
+    public function store(Request $request)
+    {
+        try {
+            if (!isset($request->products) || count($request->products) === 0) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Bạn phải thêm ít nhất một sản phẩm vào phiếu xuất.');
+            }
 
-        // Tạo export order
-        $exportOrder = ExportOrder::create([
-            'id_customer' => $request->khach_hang,
-            'id_user' => Auth::id(),
-            'total_price' => $request->tri_gia,
-        ]);
+            // Kiểm tra số lượng từng sản phẩm trước khi tạo phiếu xuất
+            foreach ($request->products as $productInput) {
+                $product = Product::find($productInput['code']);
 
-        
-        foreach ($request->products as $product) {
-            ExportOrderDetail::create([
-                'id_export' => $exportOrder->id,
-                'product_id' => $product['code'],
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-                'subtotal' => $product['price'] * $product['quantity'],
+                if (!$product) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', "Sản phẩm với mã {$productInput['code']} không tồn tại.");
+                }
+
+                if ($productInput['quantity'] > $product->quantity) {
+                    return redirect()->back()
+                        ->withInput()
+                        ->with('error', "Sản phẩm {$product->name} chỉ còn {$product->quantity} trong kho, không thể xuất số lượng yêu cầu.");
+                }
+            }
+
+            // Tạo phiếu xuất
+            $exportOrder = ExportOrder::create([
                 'id_customer' => $request->khach_hang,
                 'id_user' => Auth::id(),
+                'total_price' => $request->tri_gia,
             ]);
-        }
 
-        return redirect()->route('exportorder.index')->with('success', 'Tạo phiếu xuất thành công!');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Lỗi khi tạo phiếu xuất: ' . $e->getMessage());
+            // Tạo chi tiết phiếu xuất và cập nhật số lượng trong kho
+            foreach ($request->products as $productInput) {
+                ExportOrderDetail::create([
+                    'id_export' => $exportOrder->id,
+                    'product_id' => $productInput['code'],
+                    'quantity' => $productInput['quantity'],
+                    'price' => $productInput['price'],
+                    'subtotal' => $productInput['price'] * $productInput['quantity'],
+                    'id_customer' => $request->khach_hang,
+                    'id_user' => Auth::id(),
+                ]);
+
+                // Trừ số lượng tồn kho
+                $product = Product::find($productInput['code']);
+                $product->quantity -= $productInput['quantity'];
+                $product->save();
+            }
+
+            return redirect()->route('exportorder.index')->with('success', 'Tạo phiếu xuất thành công!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Lỗi khi tạo phiếu xuất: ' . $e->getMessage());
+        }
     }
-}
+
 
     // xoá 
     public function destroy($id)
