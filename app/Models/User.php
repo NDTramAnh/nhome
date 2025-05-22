@@ -45,7 +45,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-<<<<<<< HEAD
+
      public function exportOrders()
     {
         return $this->hasMany(ExportOrder::class, 'id_user');
@@ -54,10 +54,10 @@ class User extends Authenticatable
     public function exportOrderDetails()
     {
         return $this->hasMany(ExportOrderDetail::class, 'id_user');
-=======
+    }
     public function products()
     {
         return $this->hasMany(Product::class, 'user_id');
->>>>>>> import_crud
+
     }
 }

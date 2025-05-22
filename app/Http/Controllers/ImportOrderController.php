@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ImportOrder;
 use App\Models\User;
 use App\Models\Supplier;
-use App\Models\ImportOrderDetail;
+use App\Models\ImportOrdersDetail;
 use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 class ImportOrderController extends Controller
@@ -56,7 +56,7 @@ class ImportOrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id_product',
+            
             'supplier_id' => 'required|exists:suppliers,id_supplier',
             'user_id' => 'required|exists:users,id',
             'quantity' => 'required|integer|min:1',
@@ -75,7 +75,7 @@ class ImportOrderController extends Controller
         ]);
 
 
-        ImportOrderDetail::create([
+        ImportOrdersDetail::create([
             'id_import' => $importOrder->id_import,
             'id_product' => $request->product_id,
             'quantity' => $request->quantity,

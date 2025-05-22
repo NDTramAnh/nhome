@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
+
 use Illuminate\Http\Request;
 use App\Models\Product;
-
+use PDF;
 class ProductController extends Controller
 {
     public function search(Request $request)
@@ -33,14 +33,6 @@ class ProductController extends Controller
 
         return response()->json(['results' => $results]);
     }
-}
-=======
-use App\Models\Product;
-use Illuminate\Http\Request;
-use PDF;
-
-class ProductController extends Controller
-{
     public function index(Request $request)
 {
      $query = Product::query();
@@ -129,6 +121,7 @@ class ProductController extends Controller
 
     return view('products.show', compact('product'));
 }
-    
 }
->>>>>>> import_crud
+
+
+

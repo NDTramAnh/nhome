@@ -10,20 +10,14 @@
                     <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
                 </li>
                 <li class="nav-item">
-<<<<<<< HEAD
-                    <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}" href="{{ route('product') }}">Product</a>
+
+                    <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}" href="{{ route('products.index') }}">Product</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}" href="{{ route('import.orders') }}">Import_Orders</a>
-=======
-
-                <a class="nav-link" href="{{ route('products.index') }}">Product</a>
+                    <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}" href="{{ route('import.page') }}">Import_Orders</a>
+  
                 </li>  
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a>
-
->>>>>>> import_crud
-                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}" href="{{ route('export.orders') }}">Export_Orders</a>
                 </li>
@@ -31,11 +25,11 @@
                     <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
                 </li>
                 <li class="nav-item">
-<<<<<<< HEAD
-                    <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers') }}">Suppliers</a>
-=======
-                    <a class="nav-link" href="{{ route('suppliers.index') }}">Suppliers</a>
->>>>>>> import_crud
+
+                    <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">Suppliers</a>
+
+                    
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
