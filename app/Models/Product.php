@@ -8,13 +8,13 @@ class Product extends Model
 {
 
 
-    protected $primaryKey = 'id_product';
-    protected $fillable = ['name_product', 'category', 'price', 'quantity', 'status'];
+    //protected $primaryKey = 'id_product';
+    protected $fillable = ['name', 'category', 'price', 'quantity', 'status'];
     public $timestamps = true;
 
     public function exportOrderDetails()
     {
-        return $this->hasMany(ExportOrderDetail::class, 'id_product');
+        return $this->hasMany(ExportOrderDetail::class, 'id');
     }
 
 

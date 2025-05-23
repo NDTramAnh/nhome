@@ -29,26 +29,27 @@ class ImportOrderController extends Controller
         $order = ImportOrder::with(['supplier', 'user', 'details.product'])->findOrFail($id);
 
         $pdf = Pdf::loadView('import.export_pdf', compact('order'));
-        return $pdf->stream('phieu_nhap_'.$order->id_import.'.pdf');
+        return $pdf->stream('phieu_nhap_' . $order->id_import . '.pdf');
     }
     public function index(Request $request)
-    {
-        $search = $request->input('search');
-        $importOrders = ImportOrder::when($search, function ($query, $search) {
+{
+    $search = $request->input('search');
+
+    $importOrders = ImportOrder::when($search, function ($query, $search) {
             $query->where('id_import', 'like', "%$search%")
                 ->orWhereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));
         })
-            ->with(['user', 'supplier'])
-            ->get();
+        ->with(['user', 'supplier'])
+        ->paginate(10);  // phân trang 10 bản ghi / trang
 
-        return view('import.import', compact('importOrders'));
-    }
+    return view('import.import', compact('importOrders'));
+}
 
     public function create()
     {
         $suppliers = Supplier::all();
         $users = User::all();
-        $products = Product::select('id_product', 'name_product', 'price')->get();
+        $products = Product::select('id', 'name', 'price')->get();
 
         return view('import.addImport', compact('suppliers', 'users', 'products'));
     }
@@ -56,7 +57,7 @@ class ImportOrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            
+
             'supplier_id' => 'required|exists:suppliers,id_supplier',
             'user_id' => 'required|exists:users,id',
             'quantity' => 'required|integer|min:1',

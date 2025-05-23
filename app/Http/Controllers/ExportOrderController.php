@@ -84,6 +84,7 @@ class ExportOrderController extends Controller
             foreach ($request->products as $productInput) {
                 ExportOrderDetail::create([
                     'id_export' => $exportOrder->id,
+                    
                     'product_id' => $productInput['code'],
                     'quantity' => $productInput['quantity'],
                     'price' => $productInput['price'],
