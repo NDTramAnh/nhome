@@ -14,6 +14,12 @@ class ExportOrderController extends Controller
     // Trang danh sách phiếu xuất
     public function index(Request $request)
     {
+        $sortOrder = $request->input('sort', 'desc'); // Mặc định giảm dần (mới nhất trước)
+
+        // Chỉ cho phép 'asc' hoặc 'desc', tránh nhập sai
+        if (!in_array($sortOrder, ['asc', 'desc'])) {
+            $sortOrder = 'desc';
+        }
 
         $query = ExportOrder::query();
 
@@ -28,10 +34,10 @@ class ExportOrderController extends Controller
         }
 
 
-        $exportOrders = $query->orderBy('id', 'desc')->paginate(5);
+      $exportOrders = $query->orderBy('created_at', $sortOrder)->paginate(5);
 
 
-        return view('exportorder.exportorder', compact('exportOrders'));
+        return view('exportorder.exportorder', compact('exportOrders','sortOrder'));
     }
 
 
