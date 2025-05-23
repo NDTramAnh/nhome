@@ -118,9 +118,13 @@ class CrudUserController extends Controller
     public function deleteUser($id)
     {
         $user = User::find($id);
-        if (!$user) {
-            abort(404);
-        }
+        // if (!$user) {
+        //     abort(404);
+        // }
+        // Kiểm tra nếu người đăng nhập không có vai trò admin
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+    }
 
         $user->delete();
 
@@ -134,8 +138,12 @@ class CrudUserController extends Controller
 
 public function updateUser($id)
 {
-    if (!auth()->user()->roles->contains('name', 'admin')) {
-        abort(403, 'Bạn không có quyền truy cập.');
+    // if (!auth()->user()->roles->contains('name', 'admin')) {
+    //     abort(403, 'Bạn không có quyền truy cập.');
+    // }
+    // Kiểm tra nếu người đăng nhập không có vai trò admin
+    if (!Auth::user()->roles->contains('name', 'admin')) {
+        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
     }
 
     $user = User::findOrFail($id);
@@ -178,7 +186,7 @@ public function updateUser($id)
 
     $user->roles()->sync($request->roles ?? []);
 
-    return redirect()->route('user.list')->with('success', 'Cập nhật user thành công!');
+    return redirect()->route('users.list')->with('success', 'Cập nhật user thành công!');
 }
 
 

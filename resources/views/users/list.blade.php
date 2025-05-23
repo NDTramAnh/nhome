@@ -2,34 +2,6 @@
 
 @section('content')
 
-    <main class="login-form">
-        <div class="container">
-            <div class="row justify-content-center">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($users as $user)
-                            <tr>
-                                <th>{{ $user->id }}</th>
-                                <th>{{ $user->name }}</th>
-                                <th>{{ $user->email }}</th>
-                                <th>
-                                    <a href="{{ route('users.readUser', ['id' => $user->id]) }}">View</a> |
-                                    <a href="{{ route('users.updateUser', ['id' => $user->id]) }}">Edit</a> |
-                                    <a href="{{ route('users.deleteUser', ['id' => $user->id]) }}">Delete</a>
-                                </th>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
 
 <style>
     .nav-link.active {
@@ -58,7 +30,7 @@
                     <a class="nav-link" href="#">Export_Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('user.list') ? 'active' : '' }}" href="{{ route('user.list') }}">Users</a>
+                    <a class="nav-link {{ request()->routeIs('users.list') ? 'active' : '' }}" href="{{ route('users.list') }}">Users</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Suppliers</a>
@@ -82,6 +54,12 @@
                     <i class="fas fa-check-circle"></i> {{ Session::get('success') }}
                 </div>
             @endif
+            @if (Session::has('error'))
+    <div class="alert alert-danger">
+        <i class="fas fa-exclamation-circle"></i> {{ Session::get('error') }}
+    </div>
+@endif
+
 
             <table class="table table-bordered">
                 <thead>
@@ -101,7 +79,7 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                     @foreach($user->roles as $role)
-                                        <a href="{{ route('user.role', ['id' => $role->id]) }}">
+                                        <a href="{{ route('users.role', ['id' => $role->id]) }}">
                                             <span class="badge bg-info text-dark">
                                                 {{ $role->name . '-' }}
                                             </span>
@@ -109,9 +87,9 @@
                                     @endforeach
                                 </td>
                             <td>
-                                <a href="{{ route('user.readUser', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View</a> |
-                                <a href="{{ route('user.updateUser', ['id' => $user->id]) }}" class="btn btn-warning btn-sm">Edit</a> |
-                                <a href="{{ route('user.deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xoá không?')">Delete</a>
+                                <a href="{{ route('users.readUser', ['id' => $user->id]) }}" class="btn btn-info btn-sm">View</a> |
+                                <a href="{{ route('users.updateUser', ['id' => $user->id]) }}" class="btn btn-warning btn-sm">Edit</a> |
+                                <a href="{{ route('users.deleteUser', ['id' => $user->id]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn xoá không?')">Delete</a>
                             </td>
                         </tr>
                     @endforeach

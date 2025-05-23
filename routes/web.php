@@ -69,7 +69,7 @@ Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('users.deleteUser');
 
-Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
+// Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
 // Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
@@ -80,7 +80,7 @@ Route::get('/products/print', [ProductController::class, 'printPDF'])->name('pro
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-Route::get('role', [RoleController::class, 'role'])->name('user.role');
+Route::get('role', [RoleController::class, 'role'])->name('users.role');
 
 Route::get('/', function () {
     return view('welcome');

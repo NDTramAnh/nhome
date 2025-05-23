@@ -23,7 +23,7 @@
                                         <td>{{ $user->name }}</td>
                                         <td>
                                             @foreach($user->roles as $role)
-                                        <a href="{{ route('user.role', ['id' => $role->id]) }}">
+                                        <a href="{{ route('users.role', ['id' => $role->id]) }}">
                                             <span class="badge bg-info text-dark">
                                                 {{ $role->name . '-' }}
                                             </span>
@@ -39,7 +39,7 @@
 
                     <!-- Back Button -->
                     <div class="text-center mt-4">
-                        <a href="{{ route('user.list') }}" class="btn btn-secondary">
+                        <a href="{{ route('users.list') }}" class="btn btn-secondary">
                             ← Quay lại danh sách người dùng
                         </a>
                     </div>

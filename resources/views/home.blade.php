@@ -46,14 +46,16 @@
                     
 
 
-                    <a class="nav-link {{ request()->routeIs('user.list') ? 'active' : '' }}" href="{{ route('user.list') }}">Users</a>
+                    <!-- <a class="nav-link {{ request()->routeIs('users.list') ? 'active' : '' }}" href="{{ route('users.list') }}">Users</a> -->
 
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
                 </li>
 
-                
+                <li class="nav-item">
+                        <a class="nav-link" href="{{ route('signout') }}" onclick="return confirm('Bạn có muốn đăng xuất không?')">Log out</a>
+                    </li>
             </ul>
         </div>
 
@@ -63,13 +65,7 @@
             @yield('main-content')
             @else
 
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ route('signout') }}">Log out</a>
-                    </li>
-            </ul>
-        </div>
-
-        {{-- Main Content --}}
+                {{-- Main Content --}}
         <div class="col-md-10 p-4">
 
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -78,6 +74,10 @@
             </div>
             @endif
         </div>
+            
+        </div>
+
+        
     </div>
 </div>
 

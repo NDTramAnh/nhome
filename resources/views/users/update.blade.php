@@ -60,7 +60,7 @@
                     <div class="card">
                         <h3 class="card-header text-center">Update User</h3>
                         <div class="card-body">
-                            <form action="{{ route('user.postUpdateUser', ['id' => $user->id]) }}" method="POST">
+                            <form action="{{ route('users.postUpdateUser', ['id' => $user->id]) }}" method="POST">
 
                                 @csrf
                                 <input name="id" type="hidden" value="{{$user->id}}">
