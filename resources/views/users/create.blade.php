@@ -62,26 +62,37 @@
     <div class="register-container">
         <h3>Create User</h3>
         <form action="{{ route('user.postUser') }}" method="POST">
-            @csrf
-            <input type="text" placeholder="Name" id="name" class="form-control" name="name" required autofocus>
-            @if ($errors->has('name'))
-                <span class="text-danger">{{ $errors->first('name') }}</span>
-            @endif
+    @csrf
 
-            <input type="text" placeholder="Email" id="email_address" class="form-control" name="email" required>
-            @if ($errors->has('email'))
-                <span class="text-danger">{{ $errors->first('email') }}</span>
-            @endif
+    <!-- Name -->
+    <input type="text" placeholder="Name" id="name" class="form-control" name="name" required autofocus>
+    @if ($errors->has('name'))
+        <span class="text-danger">{{ $errors->first('name') }}</span>
+    @endif
 
-            <input type="password" placeholder="Password" id="password" class="form-control" name="password" required>
-            @if ($errors->has('password'))
-                <span class="text-danger">{{ $errors->first('password') }}</span>
-            @endif
+    <!-- Email -->
+    <input type="text" placeholder="Email" id="email_address" class="form-control" name="email" required>
+    @if ($errors->has('email'))
+        <span class="text-danger">{{ $errors->first('email') }}</span>
+    @endif
 
-            <button type="submit" class="btn btn-register">Register</button>
+    <!-- Password -->
+    <input type="password" placeholder="Password" id="password" class="form-control" name="password" required>
+    @if ($errors->has('password'))
+        <span class="text-danger">{{ $errors->first('password') }}</span>
+    @endif
 
-            <a href="{{ route('login') }}" class="login-link">Đã có tài khoản? Quay lại login</a>
-        </form>
+    <!-- Confirm Password -->
+    <input type="password" placeholder="Confirm Password" id="password_confirmation" class="form-control" name="password_confirmation" required>
+    @if ($errors->has('password_confirmation'))
+        <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
+    @endif
+
+    <button type="submit" class="btn btn-register">Register</button>
+
+    <a href="{{ route('login') }}" class="login-link">Đã có tài khoản? Quay lại login</a>
+</form>
+
     </div>
 </main>
 @endsection

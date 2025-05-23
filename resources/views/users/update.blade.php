@@ -87,6 +87,27 @@
                                         <span class="text-danger">{{ $errors->first('password') }}</span>
                                     @endif
                                 </div>
+                                <div class="form-group mb-3">
+    <input type="password" placeholder="Confirm Password" id="password_confirmation" class="form-control"
+           name="password_confirmation" required>
+    @if ($errors->has('password_confirmation'))
+        <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
+    @endif
+</div>
+
+                                <div class="form-group mb-3">
+    <label><strong>Roles:</strong></label><br>
+    @foreach($roles as $role)
+        <div class="form-check form-check-inline">
+            <input type="checkbox" class="form-check-input" name="roles[]" id="role_{{ $role->id }}" value="{{ $role->id }}"
+                {{ in_array($role->id, $userRoles) ? 'checked' : '' }}>
+            <label class="form-check-label" for="role_{{ $role->id }}">{{ $role->name }}</label>
+        </div>
+    @endforeach
+    @if ($errors->has('roles'))
+        <div class="text-danger">{{ $errors->first('roles') }}</div>
+    @endif
+</div>
 
                                 <div class="d-grid mx-auto">
                                     <button type="submit" class="btn btn-dark btn-block">Update</button>

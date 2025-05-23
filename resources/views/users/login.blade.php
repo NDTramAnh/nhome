@@ -57,8 +57,19 @@
 <main class="login-form">
     <div class="login-container">
         <h3>Login</h3>
+        @if (session('success'))
+    <div class="alert alert-success text-center">
+        {{ session('success') }}
+    </div>
+@endif
+
         <form method="POST" action="{{ route('user.authUser') }}">
-            @csrf
+        @if ($errors->has('login'))
+    <div class="alert alert-danger text-center" role="alert">
+        {{ $errors->first('login') }}
+    </div>
+@endif    
+        @csrf
             <input type="text" placeholder="email" id="email" class="form-control" name="email" required autofocus>
             @if ($errors->has('email'))
                 <span class="text-danger">{{ $errors->first('email') }}</span>
