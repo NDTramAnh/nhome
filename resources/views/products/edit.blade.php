@@ -24,13 +24,13 @@
             </div>
           @endif
 
-          <form action="{{ route('products.update', $product->id_product) }}" method="POST">
+          <form action="{{ route('products.update', $product->id) }}" method="POST">
             @csrf
             @method('PUT')
 
             <div class="mb-3">
               <label for="name_product" class="form-label">Tên sản phẩm</label>
-              <input type="text" class="form-control" id="name_product" name="name_product" value="{{ old('name_product', $product->name_product) }}" required>
+              <input type="text" class="form-control" id="name" name="name_product" value="{{ old('name', $product->name) }}" required>
             </div>
 
             <div class="mb-3">

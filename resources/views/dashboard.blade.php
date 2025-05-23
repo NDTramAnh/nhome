@@ -1,3 +1,4 @@
+{{-- resources/views/dashboard.blade.php --}}
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,15 +10,17 @@
     
 </head>
 <body>
-<nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
-    <div class="container">
-        <a class="navbar-brand mr-auto" href="#" style="color:rgb(218, 0, 181);"><strong>GoStock</strong></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
-@yield('content')
+    <nav class="navbar navbar-expand-lg" style="background-color: #e3f2fd;">
+        <div class="container">
+            <a class="navbar-brand mr-auto" href="#" style="color:rgb(218, 0, 181);"><strong>GoStock</strong></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    @yield('content')
+
 </body>
 </html>

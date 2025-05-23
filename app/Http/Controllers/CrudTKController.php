@@ -43,7 +43,7 @@ class CrudTKController extends Controller
         $collection = $products->map(function ($product) {
             $tonKho = $product->quantity;
             $tongNhap = ImportOrdersDetail::where('id_product', $product->id)->sum('quantity');
-            $tongBan = ExportOrderDetail::where('product_id', $product->id)->sum('quantity');
+            $tongBan = ExportOrderDetail::where('product_id', $product->id)->sum('quantity'); // Sửa ở đây
             $tiLeTieuThu = $tongNhap > 0 ? round(($tongBan / $tongNhap) * 100) : 0;
             $trangThai = $tonKho == 0 ? 'Hết hàng' : ($tonKho < 20 ? 'Sắp hết' : ($tonKho < 100 ? 'Trung bình' : 'Còn nhiều'));
 

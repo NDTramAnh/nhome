@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ExportOrder;
+use App\Models\User;
 class HomeController extends Controller
+
 {
     public function index()
     {
@@ -40,9 +42,11 @@ class HomeController extends Controller
     }
 
     public function users()
-    {
-        return view('users');
-    }
+{
+    $users = User::with('roles')->paginate(10); // đảm bảo bạn load roles nếu có
+    return view('users.list', ['users' => $users]);
+}
+
 
     public function suppliers()
     {
