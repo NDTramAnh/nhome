@@ -9,6 +9,7 @@ use App\Http\Controllers\ExportOrderController;
 use App\Http\Controllers\CrudTKController;
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 
 /*
@@ -53,44 +54,41 @@ Route::get('/import-orders/{id}', [ImportOrderController::class, 'show'])->name(
 Route::delete('/import-orders/{id}', [ImportOrderController::class, 'destroy'])->name('import.delete');
 Route::get('/import-orders/{id}/export', [ImportOrderController::class, 'export'])->name('import.export');
 Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+
+// User
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('user.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('user.updateUser');
-
 Route::get('view/{id}', [CrudUserController::class, 'readUser'])->name('users.readUser');
 Route::get('update/{id}', [CrudUserController::class, 'updateUser'])->name('users.updateUser');
-
-
 Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name('users.postUpdateUser');
-
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('users.deleteUser');
 
-Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
+
+
+// Product
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-// Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-// Route::put('/products/{id}', [ProductController::class, 'update'])->name('products.update');
-// Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 Route::get('/products/print', [ProductController::class, 'printPDF'])->name('products.print');
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{product}', [RoleController::class, 'show'])->name('products.show');
 
 
 
 Route::get('/', function () {
     return view('welcome');
 });
+
 // định nghĩa homecontroller
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-// Route::get('/product', [HomeController::class, 'product'])->name('product');
-// Route::get('/import-orders', [HomeController::class, 'importOrder'])->name('import.orders');
-
 Route::get('/export-orders', [HomeController::class, 'exportOrder'])->name('export.orders');
 Route::get('/users', [HomeController::class, 'users'])->name('users');
-//Route::get('/suppliers', [HomeController::class, 'suppliers'])->name('suppliers');
+Route::get('/users/{id}/role', [HomeController::class, 'assignRole'])->name('users.role');
+
+
 
 // 
 Route::get('/exportorder', [ExportOrderController::class, 'index'])->name('exportorder.index');
-
 Route::get('/exportorder/create', [ExportOrderController::class, 'create'])
     ->middleware('auth')
     ->name('exportorder.create');

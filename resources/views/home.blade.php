@@ -13,7 +13,7 @@
     }
 </style>
 <div class="container-fluid p-0">
-    <div class="row">
+    <div class="row mx-0">
 
         {{-- Sidebar --}}
         <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
