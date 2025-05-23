@@ -3,7 +3,6 @@
 use App\Http\Controllers\ImportOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
-use App\Http\Controllers\RoleController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExportOrderController;
@@ -41,10 +40,6 @@ Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
 Route::get('home', [CrudUserController::class, 'home'])->name('home');
 
 
-
-Route::get('home', [CrudUserController::class, 'home'])->name('home');
-
-
 Route::get('/thong-ke', [CrudTKController::class, 'thongKe'])->name('thongke');
 
 Route::get('addImport', [ImportOrderController::class, 'create'])->name('addImport.page');
@@ -69,8 +64,7 @@ Route::post('/update/{id}', [CrudUserController::class, 'postUpdateUser'])->name
 
 Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('users.deleteUser');
 
-// Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
-// Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::get('delete/{id}', [CrudUserController::class, 'deleteUser'])->name('user.deleteUser');
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 // Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
@@ -80,7 +74,7 @@ Route::get('/products/print', [ProductController::class, 'printPDF'])->name('pro
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-Route::get('role', [RoleController::class, 'role'])->name('users.role');
+
 
 Route::get('/', function () {
     return view('welcome');

@@ -1,6 +1,6 @@
-@extends('dashboard')
+@extends('home')
 
-@section('content')
+@section('main-content')
 
 
 <style>
@@ -14,37 +14,7 @@
 
 <div class="container-fluid p-0">
     <div class="row">
-        {{-- Sidebar --}}
-        <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
-            <ul class="nav flex-column mt-4">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Product</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Import_Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Export_Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('users.list') ? 'active' : '' }}" href="{{ route('users.list') }}">Users</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Suppliers</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Inventory_Report</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{{ route('signout') }}" onclick="return confirm('Bạn có muốn đăng xuất không?')">Log out</a>
-                    </li>
-            </ul>
-
-        </div>
-
+    
         {{-- Main Content --}}
         <div class="col-md-10 p-4">
             <h5 class="danhSach">Danh sách user</h5>

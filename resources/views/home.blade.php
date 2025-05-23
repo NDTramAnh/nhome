@@ -7,7 +7,7 @@
 <style>
     .nav-link.active {
         font-weight: bold;
-        color: #0d6efd; /* hoặc màu bạn muốn */
+        color:rgb(3, 21, 71); /* hoặc màu bạn muốn */
         background-color: #ffffff;
         border-radius: 5px;
     }

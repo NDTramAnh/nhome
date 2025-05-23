@@ -1,6 +1,6 @@
-@extends('dashboard')
+@extends('home')
 
-@section('content')
+@section('main-content')
 <div class="container-fluid p-0">
     <div class="row">
         @if(session('success'))
@@ -69,47 +69,6 @@
                 }
             }
         </style>
-
-        {{-- Sidebar --}}
-        <div class="col-md-2 text-center sidebar no-print" style="min-height: 100vh; background-color: #d8edfd;">
-            <ul class="nav flex-column mt-4">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
-                        href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-
-                    <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}"
-                        href="{{ route('products.index') }}">Product</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}"
-                        href="{{ route('import.page') }}">Import_Orders</a>
-
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}"
-                        href="{{ route('export.orders') }}">Export_Orders</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}"
-                        href="{{ route('users') }}">Users</a>
-                </li>
-                <li class="nav-item">
-
-                    <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}"
-                        href="{{ route('suppliers.index') }}">Suppliers</a>
-
-
-
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}"
-                        href="{{ route('thongke') }}">Inventory_Report</a>
-                </li>
-            </ul>
-        </div>
 
         {{-- Nội dung chính --}}
         <div class="col-md-10 px-4 py-3">

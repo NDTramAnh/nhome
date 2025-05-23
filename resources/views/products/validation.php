@@ -11,9 +11,9 @@ return [
     // ... các thông báo khác bạn cần
 
     'attributes' => [
-        'name_product' => 'Tên sản phẩm',
+        'name' => 'Tên sản phẩm',
         'category' => 'Danh mục',
-        'stock_quantity' => 'Số lượng trong kho',
+        'quantity' => 'Số lượng trong kho',
         'price' => 'Giá tiền',
         'status' => 'Tình trạng',
         // thêm nếu cần
