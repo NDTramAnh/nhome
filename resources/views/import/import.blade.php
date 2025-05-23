@@ -1,64 +1,11 @@
-@extends('dashboard')
+@extends('home')
 
-@section('content')
-  <div class="container-fluid p-0">
-    <div class="row">
-    {{-- Sidebar --}}
-    <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
-
-      <ul class="nav flex-column mt-4">
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
-      </li>
-      <li class="nav-item">
-
-        <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}"
-        href="{{ route('products.index') }}">Product</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}"
-        href="{{ route('import.page') }}">Import_Orders</a>
-
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}"
-        href="{{ route('export.orders') }}">Export_Orders</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
-      </li>
-      <li class="nav-item">
-
-        <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}"
-        href="{{ route('suppliers.index') }}">Suppliers</a>
-
-
-
-      </li>
-      <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}"
-        href="{{ route('thongke') }}">Inventory_Report</a>
-      </li>
-
-      </ul>
-
-
-
-
-    </div>
-
+@section('main-content')
     {{-- Main Content --}}
-    <div class="col-md-10 p-4">
 
-
-
-      {{-- Import Orders Section --}}
-      <div class="bg-white p-4 shadow rounded">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="mb-0">Import Orders</h5>
         <a href="{{ route('addImport.page') }}" class="btn btn-success">+ Tạo phiếu nhập</a>
-
       </div>
 
       {{-- Search Bar --}}

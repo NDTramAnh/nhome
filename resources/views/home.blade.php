@@ -1,10 +1,8 @@
 @extends('dashboard')
 
 @section('content')
-
 <div class="container-fluid px-0">
     <div class="row mx-0">
-
 
 <style>
     .nav-link.active {
@@ -29,9 +27,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}" href="{{ route('import.page') }}">Import_Orders</a>
-  
                 </li>  
-                
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}" href="{{ route('export.orders') }}">Export_Orders</a>
                 </li>
@@ -39,20 +35,11 @@
                     <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
                 </li>
                 <li class="nav-item">
-
-
                     <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">Suppliers</a>
-
-                    
-
-
-                    <!-- <a class="nav-link {{ request()->routeIs('users.list') ? 'active' : '' }}" href="{{ route('users.list') }}">Users</a> -->
-
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
                 </li>
-
                 <li class="nav-item">
                         <a class="nav-link" href="{{ route('signout') }}" onclick="return confirm('Bạn có muốn đăng xuất không?')">Log out</a>
                     </li>

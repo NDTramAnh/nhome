@@ -90,7 +90,7 @@ class ProductController extends Controller
         'name_product' => 'required|string|max:255',
         'status' => 'required|in:0,1,2',  // chỉ 3 giá trị hợp lệ
         'price' => 'required|numeric',
-        'stock_quantity' => 'required|integer',
+        'quantity' => 'required|integer',
         'category' => 'required|string|max:255',
     ]);
 
