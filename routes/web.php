@@ -3,6 +3,7 @@
 use App\Http\Controllers\ImportOrderController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CrudUserController;
+use App\Http\Controllers\RoleController;
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ExportOrderController;
@@ -34,6 +35,10 @@ Route::post('create', [CrudUserController::class, 'postUser'])->name('users.post
 Route::get('list', [CrudUserController::class, 'listUser'])->name('users.list');
 
 Route::get('signout', [CrudUserController::class, 'signOut'])->name('signout');
+
+
+
+Route::get('home', [CrudUserController::class, 'home'])->name('home');
 
 
 
@@ -75,7 +80,7 @@ Route::get('/products/print', [ProductController::class, 'printPDF'])->name('pro
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-
+Route::get('role', [RoleController::class, 'role'])->name('user.role');
 
 Route::get('/', function () {
     return view('welcome');
