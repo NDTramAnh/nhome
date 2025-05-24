@@ -14,15 +14,17 @@ use Illuminate\Support\Facades\Auth;
  */
 class RoleController extends Controller
 {
-    public function role(Request $request) {
-        $role_id = $request->get('id');
-        $role = Role::find($role_id);
+    public function role($id)
+    {
+        $role = Role::find($id);
 
-       $data = [
-           'role' => $role,
-           'users' => $role->users
-       ];
+        if (!$role) {
+            return redirect()->back()->with('error', 'Không tìm thấy vai trò!');
+        }
 
-        return view('role.view', $data);
+        return view('role.view', [
+            'role' => $role,
+            'users' => $role->users
+        ]);
     }
 }
