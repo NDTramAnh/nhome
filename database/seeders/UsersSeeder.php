@@ -16,6 +16,15 @@ class UsersSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
+                'name' => 'Admin',
+                'email' => 'admin@example.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('123456'), // đảm bảo mã hóa mật khẩu
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
                 'name' => 'Nguyễn Văn A',
                 'email' => 'nguyenvana@example.com',
                 'email_verified_at' => now(),
