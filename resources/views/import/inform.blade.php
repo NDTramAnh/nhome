@@ -1,8 +1,7 @@
 @extends('home')
 
 @section('main-content')
-<div class="container-fluid p-4" style="background-color: #e6f0ff; min-height: 100vh;">
-  <div class="row">
+
 
     {{-- Main Content --}}
     <div class="col-md-10">
@@ -68,6 +67,4 @@
         </div>
       </div>
     </div>
-  </div>
-</div>
 @endsection

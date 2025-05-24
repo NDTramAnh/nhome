@@ -56,7 +56,7 @@
     </div>
         <!-- Back Button -->
     <div class="container mt-4 mb-5 text-center">
-        <a href="{{ route('user.list') }}" class="btn btn-secondary">
+        <a href="{{ route('users.list') }}" class="btn btn-secondary">
             ← Quay lại danh sách người dùng
         </a>
     </div>

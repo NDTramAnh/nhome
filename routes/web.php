@@ -83,7 +83,7 @@ Route::get('/', function () {
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/export-orders', [HomeController::class, 'exportOrder'])->name('export.orders');
 Route::get('/users', [HomeController::class, 'users'])->name('users');
-Route::get('/users/{id}/role', [HomeController::class, 'assignRole'])->name('users.role');
+Route::get('/users/{id}/role', [RoleController::class, 'role'])->name('users.role');
 
 
 
