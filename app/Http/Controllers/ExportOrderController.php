@@ -8,23 +8,21 @@ use App\Models\Product;
 use App\Models\ExportOrderDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ExportOrderController extends Controller
 {
     // Trang danh sách phiếu xuất
     public function index(Request $request)
     {
-        $sortOrder = $request->input('sort', 'desc'); // Mặc định giảm dần (mới nhất trước)
-
-        // Chỉ cho phép 'asc' hoặc 'desc', tránh nhập sai
+        $sortOrder = $request->input('sort', 'desc');
         if (!in_array($sortOrder, ['asc', 'desc'])) {
             $sortOrder = 'desc';
         }
 
         $query = ExportOrder::query();
 
-
-        if ($request->has('search') && $request->search != '') {
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'like', "%$search%")
@@ -33,12 +31,30 @@ class ExportOrderController extends Controller
             });
         }
 
+        $perPage = 5;
+        $total = $query->count();
+        $maxPage = max(1, ceil($total / $perPage));
 
-      $exportOrders = $query->orderBy('created_at', $sortOrder)->paginate(5);
+        $pageInput = $request->input('page', '1');
 
+        // Kiểm tra page hợp lệ
+        if ($request->has('page')) {
+            // ctype_digit() để check chỉ có số (ko âm, ko dấu)
+            if (!ctype_digit($pageInput) || (int)$pageInput < 1 || (int)$pageInput > $maxPage) {
+                // Trả về trang lỗi tùy chỉnh (status 200 để trình duyệt hiển thị)
+                return response()->view('errors.invalid-page', [], 200);
+            }
+        }
 
-        return view('exportorder.exportorder', compact('exportOrders','sortOrder'));
+        $currentPage = (int)$pageInput;
+
+        // Truyền page hợp lệ cho paginate, không dùng mặc định lấy page từ request
+        $exportOrders = $query->orderBy('created_at', $sortOrder)
+            ->paginate($perPage, ['*'], 'page', $currentPage);
+
+        return view('exportorder.exportorder', compact('exportOrders', 'sortOrder'));
     }
+
 
 
     // tạo mới phiếu xuất
@@ -55,22 +71,27 @@ class ExportOrderController extends Controller
     // Lưu phiếu xuất mới
     public function store(Request $request)
     {
-        try {
-            if (!isset($request->products) || count($request->products) === 0) {
-                return redirect()->back()
-                    ->withInput()
-                    ->with('error', 'Bạn phải thêm ít nhất một sản phẩm vào phiếu xuất.');
-            }
+        // Validate các trường 
+        $request->validate([
+            'khach_hang' => 'required|string|max:30',
+            'tri_gia' => 'required|numeric|min:0',
+            'products' => 'required|array|min:1',
+            'products.*.code' => 'required|integer|exists:products,id',
+            'products.*.quantity' => 'required|integer|min:1',
+            'products.*.price' => 'required|numeric|min:0',
+        ], [
+            // khach_hang
+            'khach_hang.required' => 'Bạn phải nhập tên khách hàng.',
+            'khach_hang.string' => 'Tên khách hàng phải là chuỗi ký tự.',
+            'khach_hang.max' => 'Tên khách hàng không được vượt quá 30 ký tự.',
+            'khach_hang.regex' => 'Tên khách hàng không được để trống hoặc chỉ chứa khoảng trắng.',
+            'products.required' => 'Bạn phải thêm ít nhất một sản phẩm.',
+        ]);
 
-            // Kiểm tra số lượng từng sản phẩm trước khi tạo phiếu xuất
+        try {
+            // Các phần kiểm tra tồn kho và xử lý phiếu xuất 
             foreach ($request->products as $productInput) {
                 $product = Product::find($productInput['code']);
-
-                if (!$product) {
-                    return redirect()->back()
-                        ->withInput()
-                        ->with('error', "Sản phẩm với mã {$productInput['code']} không tồn tại.");
-                }
 
                 if ($productInput['quantity'] > $product->quantity) {
                     return redirect()->back()
@@ -78,15 +99,25 @@ class ExportOrderController extends Controller
                         ->with('error', "Sản phẩm {$product->name} chỉ còn {$product->quantity} trong kho, không thể xuất số lượng yêu cầu.");
                 }
             }
+            $exists = ExportOrder::where('id_customer', $request->khach_hang)
+                ->where('id_user', Auth::id())
+                ->where('total_price', $request->tri_gia)
+                ->where('created_at', '>=', now()->subSeconds(5))
+                ->exists();
 
-            // Tạo phiếu xuất
+            if ($exists) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Phiếu xuất này đã được tạo gần đây. Vui lòng đợi một chút trước khi tạo lại.');
+            }
+
+
             $exportOrder = ExportOrder::create([
                 'id_customer' => $request->khach_hang,
                 'id_user' => Auth::id(),
                 'total_price' => $request->tri_gia,
             ]);
 
-            // Tạo chi tiết phiếu xuất và cập nhật số lượng trong kho
             foreach ($request->products as $productInput) {
                 ExportOrderDetail::create([
                     'id_export' => $exportOrder->id,
@@ -99,7 +130,6 @@ class ExportOrderController extends Controller
                     'id_user' => Auth::id(),
                 ]);
 
-                // Trừ số lượng tồn kho
                 $product = Product::find($productInput['code']);
                 $product->quantity -= $productInput['quantity'];
                 $product->save();
@@ -112,16 +142,24 @@ class ExportOrderController extends Controller
     }
 
 
-    // xoá 
-    public function destroy($id)
-    {
-        try {
 
+    // xoá 
+    public function destroy($id, $key)
+    {
+        $expectedKey = md5('delete-secret-' . $id);
+
+        if ($key !== $expectedKey) {
+            return redirect()->route('exportorder.index')->with('error', 'Yêu cầu không hợp lệ!');
+        }
+
+        try {
             $exportOrder = ExportOrder::findOrFail($id);
             $exportOrder->details()->delete();
             $exportOrder->delete();
 
             return redirect()->route('exportorder.index')->with('success', 'Xoá phiếu xuất thành công!');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('exportorder.index')->with('error', 'Phiếu xuất không tồn tại hoặc đã bị xoá trước đó.');
         } catch (\Exception $e) {
             return redirect()->route('exportorder.index')->with('error', 'Lỗi khi xoá phiếu xuất: ' . $e->getMessage());
         }

@@ -10,8 +10,36 @@
 @extends('home')
 
 @section('main-content')
-<h4 class="text-center mb-3">Phiếu xuất kho</h4>
+<style>
+    #error-alert {
+        background-color: #f8d7da;
+        /* Màu đỏ nhạt */
+        color: #842029;
+        /* Màu chữ đỏ đậm */
+        border: 1px solid #f5c2c7;
+        /* Viền đỏ nhạt */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        max-width: 400px;
+        /* Giới hạn chiều rộng */
+        margin: 10px auto;
+        /* Căn giữa và cách trên dưới */
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        line-height: 1.4;
+    }
 
+    #error-alert ul {
+        margin: 0;
+        padding-left: 20px;
+        /* Khoảng cách bullet */
+    }
+
+    #error-alert li {
+        margin-bottom: 5px;
+    }
+</style>
+<h4 class="text-center mb-3">Phiếu xuất kho</h4>
 <form action="{{ route('exportorder.store') }}" method="POST">
     @csrf
     <div>
@@ -26,7 +54,7 @@
         </option>
         @endforeach
     </select>
-    
+
     <div class="row mt-3">
         <!-- Bảng sản phẩm của phiếu xuất -->
         <div class="col-md-8">
@@ -44,11 +72,20 @@
                     </tr>
                 </thead>
                 <tbody id="product-list">
-                   
+
                 </tbody>
             </table>
 
             <div class="text-end fw-bold">Total: <span id="total-value">0</span></div>
+            @if ($errors->any())
+            <div id="error-alert" class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
         </div>
 
         <!-- Form nhập thông tin phiếu xuất -->
@@ -76,6 +113,7 @@
             <input type="hidden" name="tri_gia" id="tri_gia">
 
             <button type="submit" class="btn btn-primary w-100 mt-2">Xuất</button>
+            
             <a href="{{ route('exportorder.index') }}" class="btn btn-danger w-100 mt-2">Thoát</a>
         </div>
     </div>
@@ -164,4 +202,15 @@
         });
     });
 </script>
+<script>
+    setTimeout(function() {
+        const errorAlert = document.getElementById('error-alert');
+        if (errorAlert) {
+            errorAlert.style.transition = "opacity 0.5s ease";
+            errorAlert.style.opacity = '0';
+            setTimeout(() => errorAlert.remove(), 500);
+        }
+    }, 2000);
+</script>
+
 @endsection
