@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class ExportOrdersSeeder extends Seeder
 {
     /**
@@ -13,7 +13,7 @@ class ExportOrdersSeeder extends Seeder
      */
     public function run(): void
     {
-       DB::table('export_orders')->insert([
+        DB::table('export_orders')->insert([
             [
                 'id_user' => 1,
                 'id_customer' => 'Customer A',
@@ -118,6 +118,86 @@ class ExportOrdersSeeder extends Seeder
                 'total_price' => 140.50,
                 'created_at' => now()->subDays(14),
                 'updated_at' => now(),
+            ],
+            [
+                
+                'id_user' => 1,
+                'id_customer' => 'Customer P',
+                'total_price' => 150.50,
+                'created_at' => Carbon::create(2024, 9, 12),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+               
+                'id_user' => 2,
+                'id_customer' => 'Customer Q',
+                'total_price' => 230.00,
+                'created_at' => Carbon::create(2024, 10, 3),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 3,
+                'id_customer' => 'Customer R',
+                'total_price' => 500.75,
+                'created_at' => Carbon::create(2024, 11, 8),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 1,
+                'id_customer' => 'Customer S',
+                'total_price' => 320.00,
+                'created_at' => Carbon::create(2024, 12, 15),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 4,
+                'id_customer' => 'Customer T',
+                'total_price' => 100.99,
+                'created_at' => Carbon::create(2025, 1, 11),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 5,
+                'id_customer' => 'Customer U',
+                'total_price' => 750.00,
+                'created_at' => Carbon::create(2025, 2, 20),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 2,
+                'id_customer' => 'Customer V',
+                'total_price' => 420.30,
+                'created_at' => Carbon::create(2025, 3, 8),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 3,
+                'id_customer' => 'Customer W',
+                'total_price' => 280.40,
+                'created_at' => Carbon::create(2025, 4, 14),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 1,
+                'id_customer' => 'Customer X',
+                'total_price' => 610.20,
+                'created_at' => Carbon::create(2025, 5, 4),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                
+                'id_user' => 4,
+                'id_customer' => 'Customer Y',
+                'total_price' => 190.00,
+                'created_at' => Carbon::create(2025, 5, 21),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }
