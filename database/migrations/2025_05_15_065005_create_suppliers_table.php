@@ -8,8 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->bigIncrements('id_supplier'); 
+            $table->id('id_supplier');
             $table->string('name_supplier');
             $table->string('phone_supplier', 10);
             $table->string('email');
