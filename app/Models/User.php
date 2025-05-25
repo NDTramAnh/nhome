@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 
 class User extends Authenticatable
 {
@@ -45,6 +47,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
      public function exportOrders()
     {
         return $this->hasMany(ExportOrder::class, 'id_user');
@@ -53,5 +57,19 @@ class User extends Authenticatable
     public function exportOrderDetails()
     {
         return $this->hasMany(ExportOrderDetail::class, 'id_user');
+    }
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'user_id');
+
+    }
+    /**
+     * Relationship many to many
+     * @return HasMany
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+
     }
 }

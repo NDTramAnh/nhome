@@ -6,36 +6,58 @@ use Illuminate\Http\Request;
 use App\Models\ImportOrder;
 use App\Models\User;
 use App\Models\Supplier;
-use App\Models\ImportOrderDetail;
+use App\Models\ImportOrdersDetail;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 class ImportOrderController extends Controller
 {
-    public function index(Request $request)
+    public function import()
     {
-        $search = $request->input('search');
-        $importOrders = ImportOrder::when($search, function ($query, $search) {
+        return view('import.import');
+    }
+    public function addImport()
+    {
+        return view('import.addImport');
+    }
+    public function informip()
+    {
+        return view('import.inform');
+    }
+
+    public function export($id)
+    {
+        $order = ImportOrder::with(['supplier', 'user', 'details.product'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('import.export_pdf', compact('order'));
+        return $pdf->stream('phieu_nhap_' . $order->id_import . '.pdf');
+    }
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $importOrders = ImportOrder::when($search, function ($query, $search) {
             $query->where('id_import', 'like', "%$search%")
                 ->orWhereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));
         })
-            ->with(['user', 'supplier'])
-            ->get();
+        ->with(['user', 'supplier'])
+        ->paginate(10);  // phân trang 10 bản ghi / trang
 
-        return view('import', compact('importOrders'));
-    }
+    return view('import.import', compact('importOrders'));
+}
 
     public function create()
     {
         $suppliers = Supplier::all();
         $users = User::all();
-        $products = Product::select('id_product', 'name_product', 'price')->get();
+        $products = Product::select('id', 'name', 'price')->get();
 
-        return view('addImport', compact('suppliers', 'users', 'products'));
+        return view('import.addImport', compact('suppliers', 'users', 'products'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id_product',
+
             'supplier_id' => 'required|exists:suppliers,id_supplier',
             'user_id' => 'required|exists:users,id',
             'quantity' => 'required|integer|min:1',
@@ -44,7 +66,7 @@ class ImportOrderController extends Controller
             'note' => 'nullable|string',
         ]);
 
-        
+
         $importOrder = ImportOrder::create([
 
             'supplier_id' => $request->supplier_id,
@@ -53,29 +75,29 @@ class ImportOrderController extends Controller
             'import_date' => $request->import_date,
         ]);
 
-       
-        ImportOrderDetail::create([
+
+        ImportOrdersDetail::create([
             'id_import' => $importOrder->id_import,
             'id_product' => $request->product_id,
             'quantity' => $request->quantity,
             'price' => $request->price,
         ]);
 
-        return redirect()->route('import.page') 
+        return redirect()->route('import.page')
             ->with('success', 'Đã thêm phiếu nhập thành công!');
     }
 
     public function show($id)
     {
         $order = ImportOrder::with(['user', 'supplier', 'details.product'])->findOrFail($id);
-        return view('inform', compact('order'));
+        return view('import.inform', compact('order'));
     }
 
     public function destroy($id)
     {
         $order = ImportOrder::findOrFail($id);
-        $order->details()->delete(); 
-        $order->delete(); 
+        $order->details()->delete();
+        $order->delete();
 
         return redirect()->route('import.page')->with('success', 'Đã xóa phiếu nhập thành công!');
     }
