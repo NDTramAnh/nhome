@@ -95,7 +95,8 @@ class CrudTKController extends Controller
             ->whereYear('import_date', Carbon::parse($month)->year)
             ->select('import_orders.*', 'users.name as user_name', 'suppliers.name_supplier as supplier_name')
             ->orderBy('import_date', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         // Thống kê số lượng nhập theo nhà cung cấp (cho biểu đồ)
         $supplierStats = DB::table('import_orders')
@@ -122,6 +123,27 @@ class CrudTKController extends Controller
             ->whereYear('created_at', Carbon::parse($month)->year)
             ->sum('quantity');
 
+        $dsPhieuXuat = DB::table('export_orders')
+            ->join('users', 'export_orders.id_user', '=', 'users.id')
+            ->whereMonth('export_orders.created_at', Carbon::parse($month)->month)
+            ->whereYear('export_orders.created_at', Carbon::parse($month)->year)
+            ->select('export_orders.*', 'users.name as user_name')
+            ->orderBy('export_orders.created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+
+        $topSanPhamXuat = DB::table('export_order_details')
+            ->join('products', 'export_order_details.product_id', '=', 'products.id')
+            ->join('export_orders', 'export_order_details.id_export', '=', 'export_orders.id')
+            ->whereMonth('export_orders.created_at', Carbon::parse($month)->month)
+            ->whereYear('export_orders.created_at', Carbon::parse($month)->year)
+            ->select('products.name as product_name', DB::raw('SUM(export_order_details.quantity) as total'))
+            ->groupBy('products.name')
+            ->orderByDesc('total')
+            ->get();
+
+
         return view('users.thongke', compact(
             'tab',
             'month',
@@ -135,7 +157,9 @@ class CrudTKController extends Controller
             'tongPhieuXuat',
             'tongSoLuongXuat',
             'dsPhieuNhap',
-            'supplierStats'
+            'supplierStats',
+            'dsPhieuXuat',
+            'topSanPhamXuat'
         ));
     }
 }
