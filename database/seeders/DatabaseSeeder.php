@@ -19,25 +19,18 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-<<<<<<< HEAD
+        
+        // call seeder
+        $this->call([
 
-        $this->call([
-        CategoriesSeeder::class,
-        UsersSeeder::class,
-        SuppliersSeeder::class,
-        ProductsSeeder::class,
-        ImportOrdersSeeder::class,
-        ImportOrdersDetailSeeder::class,
-        ExportOrdersSeeder::class,
-        ExportOrdersDetailsSeeder::class,
-    ]);
-=======
-        $this->call([
-            ProductsSeeder::class,
+            CategoriesSeeder::class,
+            UsersSeeder::class,
             SuppliersSeeder::class,
+            ProductsSeeder::class,
+            ImportOrdersSeeder::class,
+            ImportOrdersDetailSeeder::class,
+            ExportOrdersSeeder::class,
+            ExportOrdersDetailsSeeder::class,
         ]);
-
->>>>>>> import
     }
-    
 }
