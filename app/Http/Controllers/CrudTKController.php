@@ -88,6 +88,30 @@ class CrudTKController extends Controller
             ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
             ->sum(DB::raw('quantity * price'));
 
+        $dsPhieuNhap = DB::table('import_orders')
+            ->join('users', 'import_orders.user_id', '=', 'users.id')
+            ->join('suppliers', 'import_orders.supplier_id', '=', 'suppliers.id_supplier')
+            ->whereMonth('import_date', Carbon::parse($month)->month)
+            ->whereYear('import_date', Carbon::parse($month)->year)
+            ->select('import_orders.*', 'users.name as user_name', 'suppliers.name_supplier as supplier_name')
+            ->orderBy('import_date', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        // Thống kê số lượng nhập theo nhà cung cấp (cho biểu đồ)
+        $supplierStats = DB::table('import_orders')
+            ->join('suppliers', 'import_orders.supplier_id', '=', 'suppliers.id_supplier')
+            ->join('import_orders_detail', 'import_orders.id_import', '=', 'import_orders_detail.id_import')
+            ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
+            ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
+            ->select('suppliers.name_supplier as supplier_name', DB::raw('SUM(import_orders_detail.quantity) as total'))
+            ->groupBy('suppliers.name_supplier')
+            ->orderByDesc('total')
+            ->get();
+
+
+
+
         // Xuất hàng
         $tongPhieuXuat = DB::table('export_orders')
             ->whereMonth('created_at', Carbon::parse($month)->month)
@@ -98,6 +122,27 @@ class CrudTKController extends Controller
             ->whereMonth('created_at', Carbon::parse($month)->month)
             ->whereYear('created_at', Carbon::parse($month)->year)
             ->sum('quantity');
+
+        $dsPhieuXuat = DB::table('export_orders')
+            ->join('users', 'export_orders.id_user', '=', 'users.id')
+            ->whereMonth('export_orders.created_at', Carbon::parse($month)->month)
+            ->whereYear('export_orders.created_at', Carbon::parse($month)->year)
+            ->select('export_orders.*', 'users.name as user_name')
+            ->orderBy('export_orders.created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+
+        $topSanPhamXuat = DB::table('export_order_details')
+            ->join('products', 'export_order_details.product_id', '=', 'products.id')
+            ->join('export_orders', 'export_order_details.id_export', '=', 'export_orders.id')
+            ->whereMonth('export_orders.created_at', Carbon::parse($month)->month)
+            ->whereYear('export_orders.created_at', Carbon::parse($month)->year)
+            ->select('products.name as product_name', DB::raw('SUM(export_order_details.quantity) as total'))
+            ->groupBy('products.name')
+            ->orderByDesc('total')
+            ->get();
+
 
         return view('users.thongke', compact(
             'tab',
@@ -110,7 +155,11 @@ class CrudTKController extends Controller
             'tongSoLuongNhap',
             'tongGiaTriNhap',
             'tongPhieuXuat',
-            'tongSoLuongXuat'
+            'tongSoLuongXuat',
+            'dsPhieuNhap',
+            'supplierStats',
+            'dsPhieuXuat',
+            'topSanPhamXuat'
         ));
     }
 }
