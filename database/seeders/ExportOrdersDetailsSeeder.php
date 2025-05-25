@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ExportOrdersDetailsSeeder extends Seeder
 {
@@ -13,10 +14,10 @@ class ExportOrdersDetailsSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('export_order_details')->insert([
+        DB::table('export_order_details')->insert([
             [
                 'id_export' => 1,
-                'product_id' => 1,        
+                'product_id' => 1,
                 'quantity' => 2,
                 'price' => 75.25,
                 'subtotal' => 150000.50,
@@ -179,6 +180,116 @@ class ExportOrdersDetailsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'id_export' => 16,
+                'product_id' => 1,       
+                'quantity' => 2,
+                'price' => 150000,     
+                'subtotal' => 2 * 150000,
+                'id_customer' => 'Customer P',
+                'id_user' => 1,
+                'created_at' => Carbon::create(2024, 9, 12),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 17,
+                'product_id' => 2,       
+                'quantity' => 5,
+                'price' => 250000,      
+                'subtotal' => 5 * 250000,
+                'id_customer' => 'Customer Q',
+                'id_user' => 2,
+                'created_at' => Carbon::create(2024, 10, 3),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 18,
+                'product_id' => 3,      
+                'quantity' => 10,
+                'price' => 400000,       
+                'subtotal' => 10 * 400000,
+                'id_customer' => 'Customer R',
+                'id_user' => 3,
+                'created_at' => Carbon::create(2024, 11, 8),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 19,
+                'product_id' => 4,       
+                'quantity' => 4,
+                'price' => 200000,      
+                'subtotal' => 4 * 200000,
+                'id_customer' => 'Customer S',
+                'id_user' => 1,
+                'created_at' => Carbon::create(2024, 12, 15),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 20,
+                'product_id' => 5,     
+                'quantity' => 1,
+                'price' => 300000,      
+                'subtotal' => 1 * 300000,
+                'id_customer' => 'Customer T',
+                'id_user' => 4,
+                'created_at' => Carbon::create(2025, 1, 11),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 21,
+                'product_id' => 6,     
+                'quantity' => 15,
+                'price' => 170000,      
+                'subtotal' => 15 * 170000,
+                'id_customer' => 'Customer U',
+                'id_user' => 5,
+                'created_at' => Carbon::create(2025, 2, 20),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 22,
+                'product_id' => 7,       
+                'quantity' => 6,
+                'price' => 160000,      
+                'subtotal' => 6 * 160000,
+                'id_customer' => 'Customer V',
+                'id_user' => 2,
+                'created_at' => Carbon::create(2025, 3, 8),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 23,
+                'product_id' => 8,      
+                'quantity' => 8,
+                'price' => 200000,       
+                'subtotal' => 8 * 200000,
+                'id_customer' => 'Customer W',
+                'id_user' => 3,
+                'created_at' => Carbon::create(2025, 4, 14),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 24,
+                'product_id' => 9,       
+                'quantity' => 10,
+                'price' => 120000,       
+                'subtotal' => 10 * 120000,
+                'id_customer' => 'Customer X',
+                'id_user' => 1,
+                'created_at' => Carbon::create(2025, 5, 4),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'id_export' => 25,
+                'product_id' => 10,    
+                'quantity' => 5,
+                'price' => 120000,      
+                'subtotal' => 5 * 120000,
+                'id_customer' => 'Customer Y',
+                'id_user' => 4,
+                'created_at' => Carbon::create(2025, 5, 21),
+                'updated_at' => Carbon::now(),
+            ]
         ]);
     }
 }
