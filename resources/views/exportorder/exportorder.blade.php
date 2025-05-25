@@ -44,16 +44,21 @@
             <td>{{ number_format($order->total_price, 0, ',', '.') }}</td>
             <td>
                 <div class="d-flex gap-2">
-                    <form action="{{ route('exportorder.destroy', $order->id) }}" method="POST"
+                    @php
+                    $deleteKey = md5('delete-secret-' . $order->id);
+                    @endphp
+
+                    <form action="{{ route('exportorder.destroy', ['id' => $order->id, 'key' => $deleteKey]) }}" method="POST"
                         onsubmit="return confirm('Bạn có chắc muốn xoá phiếu xuất này không?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
-                    <a href="{{ route('exportorder.print', $order->id) }}" target="_blank"
-                        class="btn btn-primary btn-sm">Print</a>
+
+                    <a href="{{ route('exportorder.print', $order->id) }}" target="_blank" class="btn btn-primary btn-sm">Print</a>
                     <a href="{{ route('exportorder.show', $order->id) }}" class="btn btn-secondary btn-sm">View</a>
                 </div>
+
             </td>
         </tr>
         @endforeach
