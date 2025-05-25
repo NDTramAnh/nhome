@@ -6,32 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $table = 'products';
-    protected $primaryKey = 'id_product';
-    public $timestamps = false;
 
-    protected $fillable = [
-        'name_product',
-        'id_category', // sử dụng đúng theo cột trong DB
-        'price',
-        'stock_quantity',
-        'create_at',
-        'update_at',
-        'status',
-    ];
+    protected $fillable = ['name', 'category', 'price', 'quantity', 'status'];
+    public $timestamps = true;
 
-    public function category()
+    public function exportOrderDetails()
     {
-        return $this->belongsTo(Category::class, 'id_category', 'id_cate');
-    }
-
-    public function importDetails()
-    {
-        return $this->hasMany(ImportOrdersDetail::class, 'id_product', 'id_product');
-    }
-
-    public function exportDetails()
-    {
-        return $this->hasMany(ExportOrdersDetail::class, 'id_product', 'id_product');
+        return $this->hasMany(ExportOrderDetail::class, 'id_product');
     }
 }

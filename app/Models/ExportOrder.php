@@ -3,24 +3,31 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ExportOrder extends Model
 {
-     protected $primaryKey = 'id_export';
-    public $timestamps = false;
+    use HasFactory;
+    protected $table = 'export_orders';
+    protected $fillable = [
+        'id_customer',
+        'id_user',
+        'created_at',
+        'total_price',
+    ];
+     public function user()
 
-    public function details()
-    {
-        return $this->hasMany(ExportOrdersDetail::class, 'id_export');
-    }
-
-    public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function customer()
+    public function details()
     {
-        return $this->belongsTo(User::class, 'id_customer');
+        return $this->hasMany(ExportOrderDetail::class, 'id_export');
+    }
+     public function orderDetails()
+    {
+        return $this->hasMany(ExportOrderDetail::class, 'id_export', 'id');
+
     }
 }
