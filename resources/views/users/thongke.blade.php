@@ -49,7 +49,7 @@
     </tbody>
 </table>
 
-<div class="d-flex justify-content-center mt-3">
+<div class="d-flex justify-content-right mt-3">
     {{ $baoCaoTon->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
 </div>
 @endif
@@ -89,6 +89,7 @@
         @endforeach
     </tbody>
 </table>
+{{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
 @if (!empty($supplierStats) && $supplierStats->count())
 <h5 class="mt-4 text-center">Biểu đồ số lượng của mỗi nhà cung cấp</h5>
 <canvas id="chartSupplier" height="100" class="mt-4"></canvas>
@@ -101,15 +102,51 @@
 @endif
 
 {{-- TAB: Xuất hàng --}}
+{{-- TAB: Xuất hàng --}}
 @if (request('tab') == 'xuathang')
 <form method="GET" class="d-flex gap-3 align-items-center mb-3">
     <input type="hidden" name="tab" value="xuathang">
     <input type="month" name="month" class="form-control w-25" value="{{ request('month') }}">
     <button class="btn btn-primary">Lọc</button>
 </form>
-<p><strong>Tổng số phiếu xuất:</strong> {{ $tongPhieuXuat ?? '—' }}</p>
-<p><strong>Tổng số lượng xuất:</strong> {{ $tongSoLuongXuat ?? '—' }}</p>
+
+@if (!empty($dsPhieuXuat) && count($dsPhieuXuat) > 0)
+<p><strong>Tổng số phiếu xuất:</strong> {{ $tongPhieuXuat }}</p>
+<p><strong>Tổng số lượng xuất:</strong> {{ $tongSoLuongXuat }}</p>
+
+<h5 class="mt-4 text-center">Danh sách phiếu xuất</h5>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Mã phiếu</th>
+            <th>Người lập</th>
+            <th>Ngày xuất</th>
+            <th>Tổng tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($dsPhieuXuat as $phieu)
+        <tr>
+            <td>PX{{ $phieu->id }}</td>
+            <td>{{ $phieu->user_name }}</td>
+            <td>{{ \Carbon\Carbon::parse($phieu->created_at)->format('d/m/Y') }}</td>
+            <td>{{ number_format($phieu->total_price ?? 0) }} đ</td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+  {{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
+@if (!empty($topSanPhamXuat) && $topSanPhamXuat->count())
+<h5 class="mt-4 text-center">Biểu đồ sản phẩm xuất nhiều trong tháng</h5>
+<canvas id="chartSanPhamXuat" height="100" class="mt-4"></canvas>
 @endif
+@else
+<div class="alert alert-info">Không có phiếu xuất nào trong tháng này.</div>
+@endif
+@endif
+
+
+
 
 {{-- TAB: Biểu đồ --}}
 @if (request('tab') == 'nhapxuat')
@@ -119,10 +156,10 @@
     <button class="btn btn-primary">Lọc</button>
 </form>
 
-@if (!empty($dates) && !empty($importValues) && !empty($exportValues))
+@if (collect($importValues)->sum() > 0 || collect($exportValues)->sum() > 0)
 <canvas id="chartNhapXuat" height="150"></canvas>
 @else
-<div class="alert alert-warning">Không có dữ liệu biểu đồ.</div>
+<div class="alert alert-warning">Không có phiếu nhập và xuất trong tháng này.</div>
 @endif
 @endif
 </div>
@@ -181,6 +218,42 @@
                         label: 'Tổng số lượng nhập theo nhà cung cấp',
                         data: supplierData,
                         backgroundColor: 'rgba(75, 192, 192, 0.7)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    const productLabels = @json($topSanPhamXuat -> pluck('product_name'));
+    const productData = @json($topSanPhamXuat -> pluck('total'));
+
+    if (productLabels.length && productData.length) {
+        const ctxProd = document.getElementById('chartSanPhamXuat')?.getContext('2d');
+        if (ctxProd) {
+            new Chart(ctxProd, {
+                type: 'bar',
+                data: {
+                    labels: productLabels,
+                    datasets: [{
+                        label: 'Số lượng xuất theo sản phẩm',
+                        data: productData,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)'
                     }]
                 },
                 options: {
