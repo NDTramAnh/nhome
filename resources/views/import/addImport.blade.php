@@ -5,15 +5,42 @@
     <div class="row">
     {{-- Sidebar --}}
     <div class="col-md-2 text-center sidebar" style="min-height: 100vh; background-color: #d8edfd;">
-      <ul class="nav flex-column mt-4">
-      <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-      <li class="nav-item"><a class="nav-link" href="{{ route('import.page') }}">Import_Orders</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Export_Orders</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Suppliers</a></li>
-      <li class="nav-item"><a class="nav-link" href="#">Inventory_Report</a></li>
-      </ul>
+
+        <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link {{ request()->routeIs('product') ? 'active' : '' }}" href="{{ route('products.index') }}">Product</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('import.orders') ? 'active' : '' }}" href="{{ route('import.page') }}">Import_Orders</a>
+  
+                </li>  
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}" href="{{ route('export.orders') }}">Export_Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">Suppliers</a>
+
+                    
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('thongke') ? 'active' : '' }}" href="{{ route('thongke') }}">Inventory_Report</a>
+                </li>
+                
+            </ul>
+
+      
+      
+
     </div>
 
     {{-- Main Content --}}
@@ -40,7 +67,7 @@
           <select id="product" name="product_id" class="form-control" required>
           <option value="">-- Chọn sản phẩm --</option>
           @foreach ($products as $product)
-        <option value="{{ $product->id_product }}">{{ $product->name_product }}</option>
+        <option value="{{ $product->id }}">{{ $product->name}}</option>
       @endforeach
           </select>
         </div>
@@ -91,6 +118,7 @@
 
         <div class="form-row d-flex align-items-center mt-4 justify-content-end">
         <button type="submit" class="btn btn-primary">Thêm</button>
+        <a href="{{ route('import.page') }}" class="btn btn-danger">Quay lại</a>
         </div>
       </form>
 
@@ -112,7 +140,7 @@
     function updatePrice() {
     const productId = productSelect.value;
     const quantity = parseInt(quantityInput.value) || 1;
-    const product = products.find(p => p.id_product == productId);
+    const product = products.find(p => p.id == productId);
     if (product) {
       priceInput.value = product.price;
       totalPriceInput.value = product.price * quantity;

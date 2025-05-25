@@ -6,7 +6,11 @@ use Illuminate\Support\Facades\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\Role;
+
 
 /**
  * CRUD User controller
@@ -25,15 +29,7 @@ class CrudUserController extends Controller
         return view('home');
     }
 
-     public function addImport(){
-        return view('addImport');
-    }
-    public function import(){
-        return view('import');
-    }
-    public function informip(){
-        return view('inform');
-    }
+     
     /**
      * User submit form login
      */
@@ -51,7 +47,12 @@ class CrudUserController extends Controller
                 ->withSuccess('Signed in');
         }
 
-        return redirect("login")->withSuccess('Login details are not valid');
+        return back()->withErrors([
+        'login' => 'Email hoặc mật khẩu không chính xác',
+    ])->withInput();
+    }
+    public function product(){
+        return view('product');
     }
 
 
@@ -69,21 +70,32 @@ class CrudUserController extends Controller
      */
 
     public function postUser(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => [
+            'required',
+            'email',
+            'regex:/^[^@]+@[^@]+$/',
+            'unique:users,email'
+        ],
+        'password' => 'required|string|min:6|confirmed',
+    ], [
+        'email.regex' => 'Email phải chứa duy nhất một ký tự "@".',
+        'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+        'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password)
-        ]);
+    // Tạo user mới
+    User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+    ]);
 
-        return redirect("login")->withSuccess('Registration successful! Please log in.');
-    }
+    return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
+}
+
 
 
     /**
@@ -106,9 +118,13 @@ class CrudUserController extends Controller
     public function deleteUser($id)
     {
         $user = User::find($id);
-        if (!$user) {
-            abort(404);
-        }
+        // if (!$user) {
+        //     abort(404);
+        // }
+        // Kiểm tra nếu người đăng nhập không có vai trò admin
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+    }
 
         $user->delete();
 
@@ -119,42 +135,61 @@ class CrudUserController extends Controller
     /**
      * Form update user page
      */
-    public function updateUser($id)
-    {
-        $user = User::find($id);
-        if (!$user) {
-            abort(404);
-        }
-        return view('users.update', ['user' => $user]);
+
+public function updateUser($id)
+{
+    // if (!auth()->user()->roles->contains('name', 'admin')) {
+    //     abort(403, 'Bạn không có quyền truy cập.');
+    // }
+    // Kiểm tra nếu người đăng nhập không có vai trò admin
+    if (!Auth::user()->roles->contains('name', 'admin')) {
+        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
     }
+
+    $user = User::findOrFail($id);
+    $roles = Role::all();
+    $userRoles = $user->roles->pluck('id')->toArray();
+
+    return view('users.update', compact('user', 'roles', 'userRoles'));
+}
+
+
 
     /**
      * Submit form update user
      */
-    public function postUpdateUser(Request $request, $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:6', // Không bắt buộc nhập lại mật khẩu
-        ]);
-
-        $user = User::find($id);
-        if (!$user) {
-            abort(404);
-        }
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
-        }
-
-        $user->save();
-
-        return redirect("list")->withSuccess('User updated successfully!');
+  public function postUpdateUser(Request $request, $id)
+{
+    if (!auth()->user()->roles->contains('name', 'admin')) {
+        abort(403, 'Bạn không có quyền thực hiện hành động này.');
     }
+
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+        'password' => 'nullable|min:6|confirmed',
+        'roles' => 'nullable|array'
+        ], [
+    'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+    ]);
+    
+
+    $user = User::findOrFail($id);
+    $user->name = $request->name;
+    $user->email = $request->email;
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password);
+    }
+
+    $user->save();
+
+    $user->roles()->sync($request->roles ?? []);
+
+    return redirect()->route('users.list')->with('success', 'Cập nhật user thành công!');
+}
+
+
 
 
 
@@ -164,12 +199,13 @@ class CrudUserController extends Controller
 
     public function listUser()
     {
-        if (!Auth::check()) {
-            return redirect('login')->withErrors(['auth_error' => 'You need to log in first']);
+        if (Auth::check()) {
+            // $users = User::all();//Lay tat ca du lieu trong ban user
+            $users = User::paginate(10);
+            return view('users.list', ['users' => $users]); //->with('i',(request()->input('page',1)-1)*2);
         }
 
-        $users = User::all();
-        return view('users.list', ['users' => $users]);
+        return redirect("login")->withSuccess('You are not allowed to access');
     }
 
 

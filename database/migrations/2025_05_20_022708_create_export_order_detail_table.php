@@ -24,7 +24,8 @@ return new class extends Migration
 
             // khóa ngoại
             $table->foreign('id_export')->references('id')->on('export_orders')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+           $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }
