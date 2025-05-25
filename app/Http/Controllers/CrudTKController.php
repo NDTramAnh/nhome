@@ -90,21 +90,21 @@ class CrudTKController extends Controller
 
         $dsPhieuNhap = DB::table('import_orders')
             ->join('users', 'import_orders.user_id', '=', 'users.id')
-            ->join('suppliers', 'import_orders.id_supplier', '=', 'suppliers.id') // join thêm
+            ->join('suppliers', 'import_orders.supplier_id', '=', 'suppliers.id_supplier')
             ->whereMonth('import_date', Carbon::parse($month)->month)
             ->whereYear('import_date', Carbon::parse($month)->year)
-            ->select('import_orders.*', 'users.name as user_name', 'suppliers.name as supplier_name')
+            ->select('import_orders.*', 'users.name as user_name', 'suppliers.name_supplier as supplier_name')
             ->orderBy('import_date', 'desc')
             ->get();
 
         // Thống kê số lượng nhập theo nhà cung cấp (cho biểu đồ)
         $supplierStats = DB::table('import_orders')
-            ->join('suppliers', 'import_orders.id_supplier', '=', 'suppliers.id')
+            ->join('suppliers', 'import_orders.supplier_id', '=', 'suppliers.id_supplier')
             ->join('import_orders_detail', 'import_orders.id_import', '=', 'import_orders_detail.id_import')
             ->whereMonth('import_orders.import_date', Carbon::parse($month)->month)
             ->whereYear('import_orders.import_date', Carbon::parse($month)->year)
-            ->select('suppliers.name as name_supplier', DB::raw('SUM(import_orders_detail.quantity) as total'))
-            ->groupBy('suppliers.name')
+            ->select('suppliers.name_supplier as supplier_name', DB::raw('SUM(import_orders_detail.quantity) as total'))
+            ->groupBy('suppliers.name_supplier')
             ->orderByDesc('total')
             ->get();
 
