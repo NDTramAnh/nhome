@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('user_id');
             $table->decimal('total_price', 10, 2)->default(0.00);
             $table->timestamp('import_date')->useCurrent();
+            $table->decimal('import_price', 10, 2)->default(0.00);
 
 
         });

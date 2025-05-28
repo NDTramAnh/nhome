@@ -71,7 +71,7 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::get('/products/print', [ProductController::class, 'printPDF'])->name('products.print');
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/products/{product}', [RoleController::class, 'show'])->name('products.show');
+
 
 
 
@@ -84,7 +84,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/export-orders', [HomeController::class, 'exportOrder'])->name('export.orders');
 Route::get('/users', [HomeController::class, 'users'])->name('users');
 Route::get('/users/{id}/role', [RoleController::class, 'role'])->name('users.role');
-
+Route::get('/roles/{id}', [RoleController::class, 'role']);
 
 
 // 
