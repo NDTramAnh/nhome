@@ -28,8 +28,8 @@
             @csrf
 
             <div class="mb-3">
-              <label for="name_product" class="form-label">Tên sản phẩm</label>
-              <input type="text" class="form-control" id="name_product" name="name_product" value="{{ old('name_product') }}" required>
+              <label for="name" class="form-label">Tên sản phẩm</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
             </div>
 
             <div class="mb-3">
