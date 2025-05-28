@@ -40,7 +40,7 @@ class ImportOrderController extends Controller
                 ->orWhereHas('user', fn($q) => $q->where('name', 'like', "%$search%"));
         })
         ->with(['user', 'supplier'])
-        ->paginate(10);  // phân trang 10 bản ghi / trang
+        ->paginate(5);  
 
     return view('import.import', compact('importOrders'));
 }
