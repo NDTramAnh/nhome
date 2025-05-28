@@ -112,5 +112,6 @@
         e.target.closest('.product-row').remove();
       }
     });
+    
   </script>
 @endsection
