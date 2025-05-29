@@ -3,12 +3,22 @@
 @section('main-content')
 
 <h2 class="mb-4">Thống kê hàng hóa</h2>
+@if (session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@else
+{{-- Nếu tab hoặc tháng không hợp lệ --}}
+@if ($tab === 'invalid' || !empty($invalidMonth))
+    <div class="alert alert-danger text-center">
+        {{ $tab === 'invalid' ? ($messageError ?? 'Tab không hợp lệ.') : 'Tháng không hợp lệ. Vui lòng chọn lại.' }}
+    </div>
+@else
 <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
     <li class="nav-item"><a class="nav-link {{ request('tab', 'ton') == 'ton' ? 'active' : '' }}" href="{{ route('thongke', ['tab' => 'ton']) }}">Báo cáo hàng tồn</a></li>
     <li class="nav-item"><a class="nav-link {{ request('tab') == 'nhaphang' ? 'active' : '' }}" href="{{ route('thongke', ['tab' => 'nhaphang', 'month' => request('month', now()->format('Y-m'))]) }}">Thống kê nhập hàng</a></li>
     <li class="nav-item"><a class="nav-link {{ request('tab') == 'xuathang' ? 'active' : '' }}" href="{{ route('thongke', ['tab' => 'xuathang', 'month' => request('month', now()->format('Y-m'))]) }}">Thống kê xuất hàng</a></li>
     <li class="nav-item"><a class="nav-link {{ request('tab') == 'nhapxuat' ? 'active' : '' }}" href="{{ route('thongke', ['tab' => 'nhapxuat', 'month' => request('month', now()->format('Y-m'))]) }}">Biểu đồ nhập xuất</a></li>
 </ul>
+
 
 {{-- TAB: Hàng tồn --}}
 @if (request('tab', 'ton') == 'ton')
@@ -24,7 +34,7 @@
     </select>
     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
 </form>
-
+@if ($baoCaoTon->count() > 0)
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -54,7 +64,34 @@
     {{ $baoCaoTon->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
 
 </div>
+@else
+    @php
+        $keyword = request('keyword');
+        $filter = request('filter');
+    @endphp
+
+    @if ($keyword && $filter)
+        <div class="alert alert-info">
+            Không tìm thấy sản phẩm "<strong>{{ $keyword }}</strong>" và trạng thái "<strong>{{ $filter }}</strong>".
+        </div>
+    @elseif ($keyword)
+        <div class="alert alert-info">
+            Không tìm thấy sản phẩm nào có từ khóa "<strong>{{ $keyword }}</strong>".
+        </div>
+    @elseif ($filter)
+        <div class="alert alert-info">
+            Không có sản phẩm nào thuộc trạng thái "<strong>{{ $filter }}</strong>".
+        </div>
+    @else
+        <div class="alert alert-info">
+            Không có sản phẩm trong kho.
+        </div>
+    @endif
 @endif
+
+@endif
+
+
 
 {{-- TAB: Nhập hàng --}}
 @if (request('tab') == 'nhaphang')
@@ -63,13 +100,17 @@
     <input type="month" name="month" class="form-control w-25" value="{{ request('month') }}">
     <button class="btn btn-primary">Lọc</button>
 </form>
-@if (!empty($dsPhieuNhap) && count($dsPhieuNhap) > 0)
-<p><strong>Tổng số phiếu nhập:</strong> {{ $tongPhieuNhap }}</p>
-<p><strong>Tổng số lượng nhập:</strong> {{ $tongSoLuongNhap }}</p>
-<p><strong>Tổng giá trị nhập:</strong> {{ number_format($tongGiaTriNhap) }} đ</p>
 
-<h5 class="mt-4 text-center">Danh sách phiếu nhập</h5>
-<table class="table table-bordered table-striped">
+
+    @if (!empty($dsPhieuNhap) && count($dsPhieuNhap) > 0)
+        {{-- nội dung bảng phiếu nhập + biểu đồ --}}
+        <p><strong>Tổng số phiếu nhập:</strong> {{ $tongPhieuNhap }}</p>
+        <p><strong>Tổng số lượng nhập:</strong> {{ $tongSoLuongNhap }}</p>
+        <p><strong>Tổng giá trị nhập:</strong> {{ number_format($tongGiaTriNhap) }} đ</p>
+
+        <h5 class="mt-4 text-center">Danh sách phiếu nhập</h5>
+        {{-- bảng nhập hàng --}}
+        <table class="table table-bordered table-striped">
     <thead>
         <tr>
             <th>Mã phiếu</th>
@@ -91,19 +132,21 @@
         @endforeach
     </tbody>
 </table>
-{{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
-@if (!empty($supplierStats) && $supplierStats->count())
-<h5 class="mt-4 text-center">Biểu đồ số lượng của mỗi nhà cung cấp</h5>
-<canvas id="chartSupplier" height="100" class="mt-4"></canvas>
+        {{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
+        {{-- biểu đồ nhà cung cấp nếu có --}}
+        @if (!empty($supplierStats) && $supplierStats->count())
+            <h5 class="mt-4 text-center">Biểu đồ số lượng của mỗi nhà cung cấp</h5>
+            <canvas id="chartSupplier" height="100" class="mt-4"></canvas>
+        @endif
+
+    @else
+        <div class="alert alert-info mt-3">Không có phiếu nhập nào trong tháng này.</div>
+    @endif
+
 @endif
 
-@else
-<div class="alert alert-info mt-3">Không có phiếu nhập nào trong tháng này.</div>
-@endif
 
-@endif
 
-{{-- TAB: Xuất hàng --}}
 {{-- TAB: Xuất hàng --}}
 @if (request('tab') == 'xuathang')
 <form method="GET" class="d-flex gap-3 align-items-center mb-3">
@@ -112,40 +155,43 @@
     <button class="btn btn-primary">Lọc</button>
 </form>
 
-@if (!empty($dsPhieuXuat) && count($dsPhieuXuat) > 0)
-<p><strong>Tổng số phiếu xuất:</strong> {{ $tongPhieuXuat }}</p>
-<p><strong>Tổng số lượng xuất:</strong> {{ $tongSoLuongXuat }}</p>
+    @if (!empty($dsPhieuXuat) && count($dsPhieuXuat) > 0)
+        <p><strong>Tổng số phiếu xuất:</strong> {{ $tongPhieuXuat }}</p>
+        <p><strong>Tổng số lượng xuất:</strong> {{ $tongSoLuongXuat }}</p>
 
-<h5 class="mt-4 text-center">Danh sách phiếu xuất</h5>
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Mã phiếu</th>
-            <th>Người lập</th>
-            <th>Ngày xuất</th>
-            <th>Tổng tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($dsPhieuXuat as $phieu)
-        <tr>
-            <td>PX{{ $phieu->id }}</td>
-            <td>{{ $phieu->user_name }}</td>
-            <td>{{ \Carbon\Carbon::parse($phieu->created_at)->format('d/m/Y') }}</td>
-            <td>{{ number_format($phieu->total_price ?? 0) }} đ</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
-  {{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
-@if (!empty($topSanPhamXuat) && $topSanPhamXuat->count())
-<h5 class="mt-4 text-center">Biểu đồ sản phẩm xuất nhiều trong tháng</h5>
-<canvas id="chartSanPhamXuat" height="100" class="mt-4"></canvas>
+        <h5 class="mt-4 text-center">Danh sách phiếu xuất</h5>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Mã phiếu</th>
+                    <th>Người lập</th>
+                    <th>Ngày xuất</th>
+                    <th>Tổng tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($dsPhieuXuat as $phieu)
+                <tr>
+                    <td>PX{{ $phieu->id }}</td>
+                    <td>{{ $phieu->user_name }}</td>
+                    <td>{{ \Carbon\Carbon::parse($phieu->created_at)->format('d/m/Y') }}</td>
+                    <td>{{ number_format($phieu->total_price ?? 0) }} đ</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        {{ $dsPhieuXuat->links('pagination::bootstrap-5') }}
+
+        @if (!empty($topSanPhamXuat) && $topSanPhamXuat->count())
+            <h5 class="mt-4 text-center">Biểu đồ sản phẩm xuất nhiều trong tháng</h5>
+            <canvas id="chartSanPhamXuat" height="100" class="mt-4"></canvas>
+        @endif
+    @else
+        <div class="alert alert-info">Không có phiếu xuất nào trong tháng này.</div>
+    @endif
+
 @endif
-@else
-<div class="alert alert-info">Không có phiếu xuất nào trong tháng này.</div>
-@endif
-@endif
+
 
 
 
@@ -158,13 +204,13 @@
     <button class="btn btn-primary">Lọc</button>
 </form>
 
-@if (collect($importValues)->sum() > 0 || collect($exportValues)->sum() > 0)
-<canvas id="chartNhapXuat" height="150"></canvas>
-@else
-<div class="alert alert-warning">Không có phiếu nhập và xuất trong tháng này.</div>
+    @if (collect($importValues)->sum() > 0 || collect($exportValues)->sum() > 0)
+        <canvas id="chartNhapXuat" height="150"></canvas>
+    @else
+        <div class="alert alert-warning">Không có phiếu nhập và xuất trong tháng này.</div>
+    @endif
 @endif
-@endif
-</div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -205,9 +251,9 @@
     }
 
 
-    const supplierLabels = @json($supplierStats -> pluck('supplier_name'));
-    const supplierData = @json($supplierStats -> pluck('total'));
-
+    @if (!empty($supplierStats))
+    const supplierLabels = @json($supplierStats->pluck('supplier_name'));
+    const supplierData = @json($supplierStats->pluck('total'));
 
     if (supplierLabels.length && supplierData.length) {
         const ctxSup = document.getElementById('chartSupplier')?.getContext('2d');
@@ -225,25 +271,24 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
+                            ticks: { precision: 0 }
                         }
                     }
                 }
             });
         }
     }
+@endif
 
-    const productLabels = @json($topSanPhamXuat -> pluck('product_name'));
-    const productData = @json($topSanPhamXuat -> pluck('total'));
+
+    @if (request('tab') == 'xuathang' && isset($topSanPhamXuat))
+    const productLabels = @json($topSanPhamXuat->pluck('product_name'));
+    const productData = @json($topSanPhamXuat->pluck('total'));
 
     if (productLabels.length && productData.length) {
         const ctxProd = document.getElementById('chartSanPhamXuat')?.getContext('2d');
@@ -261,21 +306,21 @@
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            display: false
-                        }
+                        legend: { display: false }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                precision: 0
-                            }
+                            ticks: { precision: 0 }
                         }
                     }
                 }
             });
         }
     }
+@endif
+
 </script>
+@endif
+@endif {{-- Kết thúc if $tab !== 'invalid' --}}
 @endsection
