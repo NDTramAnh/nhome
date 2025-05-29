@@ -17,8 +17,39 @@ class CrudTKController extends Controller
     {
         $filter = $request->input('filter');
         $keyword = $request->input('keyword');
-        $month = $request->input('month') ?? now()->format('Y-m');
         $tab = $request->input('tab') ?? 'ton';
+        $month = $request->input('month') ?? now()->format('Y-m');
+
+        // Validate page: phải là số nguyên dương
+        $page = $request->input('page', 1);
+        if (!ctype_digit((string)$page) || (int)$page < 1) {
+            return redirect()->route('thongke', [
+                'tab' => $request->input('tab', 'ton'),
+                'month' => $request->input('month'),
+            ])->with('error', 'Số trang không hợp lệ.');
+        }
+
+        // Danh sách tab hợp lệ
+        $validTabs = ['ton', 'nhaphang', 'xuathang', 'nhapxuat'];
+
+        if (!preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month)) {
+            return view('users.thongke', [
+                'tab' => $tab,
+                'invalidMonth' => true,
+                'messageError' => !in_array($tab, $validTabs)
+                    ? 'Tab không tồn tại và tháng không hợp lệ.'
+                    : 'Tháng không hợp lệ. Vui lòng chọn đúng định dạng YYYY-MM (VD: 2025-05).'
+            ]);
+        }
+
+        // ===== 2. Nếu tab sai, báo lỗi =====
+        if (!in_array($tab, $validTabs)) {
+            return view('users.thongke')->with([
+                'tab' => 'invalid',
+                'messageError' => 'Tab không tồn tại. Vui lòng chọn lại.'
+            ]);
+        }
+
 
         // DATES dùng cho biểu đồ và tab khác
         $dates = collect(range(1, Carbon::parse($month)->daysInMonth))->map(function ($day) use ($month) {
