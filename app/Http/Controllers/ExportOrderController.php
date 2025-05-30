@@ -115,6 +115,9 @@ class ExportOrderController extends Controller
     // xoá 
     public function destroy($id)
     {
+        if (!auth()->user()->roles->contains('name', 'admin')) {
+    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+}
         try {
 
             $exportOrder = ExportOrder::findOrFail($id);

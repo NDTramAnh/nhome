@@ -15,6 +15,13 @@
 <div class="container-fluid p-0">
     <div class="row">
     
+    <form method="GET" action="{{ route('users.list') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="keyword" class="form-control" placeholder="Tìm kiếm username hoặc email..." value="{{ request()->get('keyword') }}">
+        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+    </div>
+</form>
+
         {{-- Main Content --}}
         <div class="col-md-10 p-4">
             <h5 class="danhSach">Danh sách user</h5>

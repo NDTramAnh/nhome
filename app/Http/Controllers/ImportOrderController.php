@@ -95,6 +95,9 @@ class ImportOrderController extends Controller
 
     public function destroy($id)
     {
+        if (!auth()->user()->roles->contains('name', 'admin')) {
+    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+}
         $order = ImportOrder::findOrFail($id);
         $order->details()->delete();
         $order->delete();

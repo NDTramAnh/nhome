@@ -117,18 +117,23 @@ class CrudUserController extends Controller
      */
     public function deleteUser($id)
     {
-        $user = User::find($id);
-        // if (!$user) {
-        //     abort(404);
-        // }
-        // Kiểm tra nếu người đăng nhập không có vai trò admin
-        if (!Auth::user()->roles->contains('name', 'admin')) {
-        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+        // Kiểm tra quyền admin
+    if (!Auth::user()->roles->contains('name', 'admin')) {
+        return redirect()->route('users.list')->with('error', 'Bạn không có quyền xoá user.');
     }
 
-        $user->delete();
+    // Tìm user theo ID
+    $user = User::find($id);
 
-        return redirect("list")->withSuccess('User deleted successfully!');
+    // Nếu không tìm thấy user (đã xoá ở tab khác)
+    if (!$user) {
+        return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
+    }
+
+    // Xoá user
+    $user->delete();
+
+    return redirect()->route('users.list')->with('success', 'User đã được xoá thành công!');
     }
 
 
@@ -197,15 +202,23 @@ public function updateUser($id)
      * List of users
      */
 
-    public function listUser()
+    public function listUser(Request $request)
     {
         if (Auth::check()) {
-            // $users = User::all();//Lay tat ca du lieu trong ban user
-            $users = User::paginate(10);
-            return view('users.list', ['users' => $users]); //->with('i',(request()->input('page',1)-1)*2);
-        }
+        $keyword = $request->input('keyword');
 
-        return redirect("login")->withSuccess('You are not allowed to access');
+        $users = User::when($keyword, function ($query, $keyword) {
+                return $query->where('name', 'like', "%{$keyword}%")
+                             ->orWhere('email', 'like', "%{$keyword}%");
+            })
+            ->with('roles')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('users.list', ['users' => $users]);
+    }
+
+    return redirect("login")->with('error', 'You are not allowed to access');
     }
 
 

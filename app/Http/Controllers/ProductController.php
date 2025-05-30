@@ -81,11 +81,15 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
+        if (!auth()->user()->roles->contains('name', 'admin')) {
+    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+}
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
+        
         $validated = $request->validate([
         'name_product' => 'required|string|max:255',
         'status' => 'required|in:0,1,2',  // chỉ 3 giá trị hợp lệ
@@ -95,12 +99,15 @@ class ProductController extends Controller
     ]);
 
     $product->update($validated);
-
+    
     return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
     }
 
     public function destroy(Product $product)
     {
+        if (!auth()->user()->roles->contains('name', 'admin')) {
+    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+}
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
