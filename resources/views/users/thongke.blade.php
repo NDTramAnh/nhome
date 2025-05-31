@@ -24,7 +24,8 @@
 @if (request('tab', 'ton') == 'ton')
 <form method="GET" action="{{ route('thongke') }}" class="d-flex gap-3 align-items-center mb-3">
     <input type="hidden" name="tab" value="ton">
-    <input type="text" name="keyword" class="form-control w-25" placeholder="Tìm theo tên/mã" value="{{ request('keyword') }}">
+<input type="text" name="keyword" class="form-control w-25" placeholder="Tìm theo tên/mã"  value="{{ request('keyword') }}"   minlength="1" maxlength="50" required>
+  <div id="error-message" style="color: red; margin-top: 5px;"></div>
     <select name="filter" class="form-select w-25" onchange="this.form.submit()">
         <option value="">Trạng thái tồn</option>
         <option value="Hết hàng" {{ request('filter') == 'Hết hàng' ? 'selected' : '' }}>Hết hàng</option>
@@ -320,6 +321,16 @@
     }
 @endif
 
+  function checkLength() {
+    const input = document.getElementById('keyword');
+    const errorDiv = document.getElementById('error-message');
+
+    if (input.value.length > 50) {
+      errorDiv.textContent = "Từ khóa không được vượt quá 50 ký tự.";
+    } else {
+      errorDiv.textContent = "";
+    }
+  }
 </script>
 @endif
 @endif {{-- Kết thúc if $tab !== 'invalid' --}}

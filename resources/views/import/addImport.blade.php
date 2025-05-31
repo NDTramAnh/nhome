@@ -41,14 +41,14 @@
 
         <div class="form-group d-flex flex-column">
           <label for="user"><strong>Người nhập</strong></label>
-          <select id="user" name="user_id" class="form-control" required>
-            <option value="">-- Chọn người nhập --</option>
-            @foreach ($users as $user)
-              <option value="{{ $user->id }}">{{ $user->name }}</option>
-            @endforeach
-          </select>
+         <input type="hidden" name="user_id" value="{{ Auth::id() }}">
+<input type="text" class="form-control" value="{{ Auth::user()->name }}" readonly>
         </div>
       </div>
+       <div class="mb-2">
+                <label>Người tạo</label>
+               
+            </div>
 
       <hr class="my-4">
 

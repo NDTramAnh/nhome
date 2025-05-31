@@ -25,11 +25,12 @@ class CrudUserController extends Controller
     {
         return view('users.login');
     }
-    public function home(){
+    public function home()
+    {
         return view('home');
     }
 
-     
+
     /**
      * User submit form login
      */
@@ -48,10 +49,11 @@ class CrudUserController extends Controller
         }
 
         return back()->withErrors([
-        'login' => 'Email hoặc mật khẩu không chính xác',
-    ])->withInput();
+            'login' => 'Email hoặc mật khẩu không chính xác',
+        ])->withInput();
     }
-    public function product(){
+    public function product()
+    {
         return view('product');
     }
 
@@ -70,31 +72,31 @@ class CrudUserController extends Controller
      */
 
     public function postUser(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => [
-            'required',
-            'email',
-            'regex:/^[^@]+@[^@]+$/',
-            'unique:users,email'
-        ],
-        'password' => 'required|string|min:6|confirmed',
-    ], [
-        'email.regex' => 'Email phải chứa duy nhất một ký tự "@".',
-        'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
-        'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                'regex:/^[^@]+@[^@]+$/',
+                'unique:users,email'
+            ],
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'email.regex' => 'Email phải chứa duy nhất một ký tự "@".',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+        ]);
 
-    // Tạo user mới
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-    ]);
+        // Tạo user mới
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+        ]);
 
-    return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
-}
+        return redirect()->route('login')->with('success', 'Đăng ký thành công! Vui lòng đăng nhập.');
+    }
 
 
 
@@ -117,23 +119,18 @@ class CrudUserController extends Controller
      */
     public function deleteUser($id)
     {
-        // Kiểm tra quyền admin
-    if (!Auth::user()->roles->contains('name', 'admin')) {
-        return redirect()->route('users.list')->with('error', 'Bạn không có quyền xoá user.');
-    }
+        $user = User::find($id);
+        // if (!$user) {
+        //     abort(404);
+        // }
+        // Kiểm tra nếu người đăng nhập không có vai trò admin
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+            return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+        }
 
-    // Tìm user theo ID
-    $user = User::find($id);
+        $user->delete();
 
-    // Nếu không tìm thấy user (đã xoá ở tab khác)
-    if (!$user) {
-        return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
-    }
-
-    // Xoá user
-    $user->delete();
-
-    return redirect()->route('users.list')->with('success', 'User đã được xoá thành công!');
+        return redirect("list")->withSuccess('User deleted successfully!');
     }
 
 
@@ -141,17 +138,13 @@ class CrudUserController extends Controller
      * Form update user page
      */
 
-public function updateUser($id)
+   public function updateUser($id)
 {
-    // if (!auth()->user()->roles->contains('name', 'admin')) {
-    //     abort(403, 'Bạn không có quyền truy cập.');
-    // }
-    // Kiểm tra nếu người đăng nhập không có vai trò admin
-    if (!Auth::user()->roles->contains('name', 'admin')) {
-        return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+    $user = User::find($id);
+    if (!$user) {
+        return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
     }
 
-    $user = User::findOrFail($id);
     $roles = Role::all();
     $userRoles = $user->roles->pluck('id')->toArray();
 
@@ -160,39 +153,44 @@ public function updateUser($id)
 
 
 
+
     /**
      * Submit form update user
      */
-  public function postUpdateUser(Request $request, $id)
-{
-    if (!auth()->user()->roles->contains('name', 'admin')) {
-        abort(403, 'Bạn không có quyền thực hiện hành động này.');
-    }
+    public function postUpdateUser(Request $request, $id)
+    {
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+            return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+        }
+
 
     $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email',
-        'password' => 'nullable|min:6|confirmed',
-        'roles' => 'nullable|array'
-        ], [
+    'name' => 'required|string|max:255',
+    'email' => 'required|email',
+    'password' => 'nullable|min:6|confirmed',
+    'roles' => 'nullable|array',
+], [
+    'name.required' => 'Vui lòng nhập tên.',
+    'email.required' => 'Vui lòng nhập email.',
+    'email.email' => 'Email không hợp lệ.',
+    'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
     'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
-    ]);
-    
+]);
 
-    $user = User::findOrFail($id);
-    $user->name = $request->name;
-    $user->email = $request->email;
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
 
-    if ($request->filled('password')) {
-        $user->password = Hash::make($request->password);
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        $user->roles()->sync($request->roles ?? []);
+
+        return redirect()->route('users.list')->with('success', 'Cập nhật user thành công!');
     }
-
-    $user->save();
-
-    $user->roles()->sync($request->roles ?? []);
-
-    return redirect()->route('users.list')->with('success', 'Cập nhật user thành công!');
-}
 
 
 
@@ -203,24 +201,23 @@ public function updateUser($id)
      */
 
     public function listUser(Request $request)
-    {
-        if (Auth::check()) {
-        $keyword = $request->input('keyword');
-
-        $users = User::when($keyword, function ($query, $keyword) {
-                return $query->where('name', 'like', "%{$keyword}%")
-                             ->orWhere('email', 'like', "%{$keyword}%");
-            })
-            ->with('roles')
-            ->paginate(10)
-            ->withQueryString();
-
-        return view('users.list', ['users' => $users]);
+{
+    if (!Auth::check()) {
+        return redirect("login")->with('error', 'You are not allowed to access');
     }
 
-    return redirect("login")->with('error', 'You are not allowed to access');
-    }
+    $keyword = $request->input('keyword');
 
+    $users = User::when($keyword, function ($query, $keyword) {
+            return $query->where('name', 'like', "%{$keyword}%")
+                         ->orWhere('email', 'like', "%{$keyword}%");
+        })
+        ->with('roles')
+        ->paginate(3)
+        ->withQueryString();
+
+    return view('users.list', ['users' => $users]);
+}
 
 
     /**
