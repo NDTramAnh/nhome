@@ -9,6 +9,7 @@ use App\Models\Supplier;
 use App\Models\ImportOrdersDetail;
 use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class ImportOrderController extends Controller
 {
@@ -150,8 +151,8 @@ class ImportOrderController extends Controller
             ->where('user_id', $request->user_id)
             ->where('import_date', $request->import_date)
             ->where('total_price', $total)
-            
-           
+
+
             ->exists();
 
         if ($exists) {
@@ -219,9 +220,9 @@ class ImportOrderController extends Controller
     public function destroy($id)
     {
 
-        if (!auth()->user()->roles->contains('name', 'admin')) {
-    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-}
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+            return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+        }
         $order = ImportOrder::findOrFail($id);
 
         $order = ImportOrder::find($id);
