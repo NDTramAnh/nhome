@@ -31,7 +31,7 @@
             @foreach($order->details as $index => $detail)
             <tr>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ $detail->product->name_product }}</td>
+                <td>{{ $detail->product->name }}</td>
                 <td>{{ $detail->quantity }}</td>
                 <td>{{ number_format($detail->price, 0, ',', '.') }}đ</td>
                 <td>{{ number_format($detail->price * $detail->quantity, 0, ',', '.') }}đ</td>

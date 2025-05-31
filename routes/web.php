@@ -71,7 +71,7 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::get('/products/print', [ProductController::class, 'printPDF'])->name('products.print');
 Route::resource('products', ProductController::class);
 Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/products/{product}', [RoleController::class, 'show'])->name('products.show');
+
 
 
 
@@ -84,7 +84,7 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/export-orders', [HomeController::class, 'exportOrder'])->name('export.orders');
 Route::get('/users', [HomeController::class, 'users'])->name('users');
 Route::get('/users/{id}/role', [RoleController::class, 'role'])->name('users.role');
-
+Route::get('/roles/{id}', [RoleController::class, 'role']);
 
 
 // 
@@ -92,10 +92,24 @@ Route::get('/exportorder', [ExportOrderController::class, 'index'])->name('expor
 Route::get('/exportorder/create', [ExportOrderController::class, 'create'])
     ->middleware('auth')
     ->name('exportorder.create');
-Route::get('/export-orders', [ExportOrderController::class, 'index'])->name('export.orders');
-Route::post('/exportorder/store', [ExportOrderController::class, 'store'])->name('exportorder.store');
-Route::get('/exportorder/{id}', [ExportOrderController::class, 'show'])->name('exportorder.show');
-Route::delete('/exportorder/{id}', [ExportOrderController::class, 'destroy'])->name('exportorder.destroy');
-Route::get('/exportorder/{id}/print', [ExportOrderController::class, 'print'])->name('exportorder.print');
 
+
+
+
+Route::get('/export-orders', [ExportOrderController::class, 'index'])->name('export.orders');
+Route::get('/exportorder', [ExportOrderController::class, 'index'])->name('exportorder.index');
+
+Route::post('/exportorder/store', [ExportOrderController::class, 'store'])->name('exportorder.store');
+
+Route::get('/exportorder/{id}', [ExportOrderController::class, 'show'])
+    ->where('id', '[0-9]+')
+    ->name('exportorder.show');
+
+Route::delete('/exportorder/{id}/{key}', [ExportOrderController::class, 'destroy'])
+    ->where(['id' => '[0-9]+', 'key' => '[a-zA-Z0-9]+'])
+    ->name('exportorder.destroy');
+
+Route::get('/exportorder/{id}/print', [ExportOrderController::class, 'print'])
+    ->where('id', '[0-9]+')
+    ->name('exportorder.print');
 

@@ -40,7 +40,7 @@ class ProductController extends Controller
     if ($request->has('search')) {
         $search = $request->input('search');
         $query
-              ->Where('name_product', 'like', "%$search%");
+              ->Where('name', 'like', "%$search%");
     }
 
     $products = $query->paginate(10); 
@@ -56,7 +56,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-          'name_product' => 'required|string|unique:products,name_product',
+        'name' => 'required|string|unique:products,name',
         'category' => 'required|string|max:255',
         'description' => 'nullable|string',
         'stock_quantity' => 'required|integer',
@@ -91,10 +91,10 @@ class ProductController extends Controller
     {
         
         $validated = $request->validate([
-        'name_product' => 'required|string|max:255',
+        'name' => 'required|string|max:255',
         'status' => 'required|in:0,1,2',  // chỉ 3 giá trị hợp lệ
         'price' => 'required|numeric',
-        'quantity' => 'required|integer',
+        'stock_quantity' => 'required|integer',
         'category' => 'required|string|max:255',
     ]);
 
