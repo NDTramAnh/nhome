@@ -39,8 +39,8 @@
             </div>
 
             <div class="mb-3">
-              <label for="stock_quantity" class="form-label">Số lượng trong kho</label>
-              <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', $product->quantity) }}" required min="0">
+              <label for="quantity" class="form-label">Số lượng trong kho</label>
+              <input type="number" class="form-control" id="quantity" name="quantity" value="{{ old('quantity', $product->quantity) }}" required min="0">
             </div>
 
             <div class="mb-3">

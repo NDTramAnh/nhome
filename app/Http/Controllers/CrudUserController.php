@@ -200,27 +200,25 @@ class CrudUserController extends Controller
      * List of users
      */
 
-    public function listUser()
-    {
-        if (Auth::check()) {
-            // $users = User::all();//Lay tat ca du lieu trong ban user
-            $users = User::paginate(10);
-            return view('users.list', ['users' => $users]); //->with('i',(request()->input('page',1)-1)*2);
-        }
-
-
-        $users = User::when($keyword, function ($query, $keyword) {
-                return $query->where('name', 'like', "%{$keyword}%")
-                             ->orWhere('email', 'like', "%{$keyword}%");
-            })
-            ->with('roles')
-            ->paginate(5)
-            ->withQueryString();
-
-        return view('users.list', ['users' => $users]);
-
-        return redirect("login")->withSuccess('You are not allowed to access');
+    public function listUser(Request $request)
+{
+    if (!Auth::check()) {
+        return redirect("login")->with('error', 'You are not allowed to access');
     }
+
+    $keyword = $request->input('keyword');
+
+    $users = User::when($keyword, function ($query, $keyword) {
+            return $query->where('name', 'like', "%{$keyword}%")
+                         ->orWhere('email', 'like', "%{$keyword}%");
+        })
+        ->with('roles')
+        ->paginate(3)
+        ->withQueryString();
+
+    return view('users.list', ['users' => $users]);
+}
+
 
     /**
      * Sign out
