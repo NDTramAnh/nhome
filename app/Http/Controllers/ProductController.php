@@ -40,7 +40,7 @@ class ProductController extends Controller
     if ($request->has('search')) {
         $search = $request->input('search');
         $query
-              ->Where('name', 'like', "%$search%");
+              ->Where('name_product', 'like', "%$search%");
     }
 
     $products = $query->paginate(10); 
@@ -56,7 +56,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-        'name' => 'required|string|unique:products,name',
+          'name_product' => 'required|string|unique:products,name_product',
         'category' => 'required|string|max:255',
         'description' => 'nullable|string',
         'stock_quantity' => 'required|integer',
@@ -81,33 +81,26 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if (!auth()->user()->roles->contains('name', 'admin')) {
-    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-}
         return view('products.edit', compact('product'));
     }
 
     public function update(Request $request, Product $product)
     {
-        
         $validated = $request->validate([
-        'name' => 'required|string|max:255',
+        'name_product' => 'required|string|max:255',
         'status' => 'required|in:0,1,2',  // chỉ 3 giá trị hợp lệ
         'price' => 'required|numeric',
-        'stock_quantity' => 'required|integer',
+        'quantity' => 'required|integer',
         'category' => 'required|string|max:255',
     ]);
 
     $product->update($validated);
-    
+
     return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
     }
 
     public function destroy(Product $product)
     {
-        if (!auth()->user()->roles->contains('name', 'admin')) {
-    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-}
         $product->delete();
 
         return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');

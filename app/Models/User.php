@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -49,7 +48,7 @@ class User extends Authenticatable
     }
 
 
-     public function exportOrders()
+    public function exportOrders()
     {
         return $this->hasMany(ExportOrder::class, 'id_user');
     }
@@ -61,15 +60,13 @@ class User extends Authenticatable
     public function products()
     {
         return $this->hasMany(Product::class, 'user_id');
-
+    }
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class, 'user_role', 'user_id', 'role_id');
     }
     /**
      * Relationship many to many
      * @return HasMany
      */
-    public function roles(): BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'user_role');
-
-    }
 }
