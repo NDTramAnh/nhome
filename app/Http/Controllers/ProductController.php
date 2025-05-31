@@ -50,12 +50,16 @@ class ProductController extends Controller
 
     public function create()
     {
+        if (!auth()->user()->roles->contains('name', 'admin')) {
+    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
+}
         return view('products.create');
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
+{
+
+    $data = $request->validate([
         'name' => 'required|string|unique:products,name',
         'category' => 'required|string|max:255',
         'description' => 'nullable|string',
@@ -66,18 +70,16 @@ class ProductController extends Controller
 
     $data['user_id'] = auth()->id();
 
-    // Thêm thời gian tạo và cập nhật theo tên cột trong database
+    // Thêm thời gian tạo và cập nhật
     $now = now();
     $data['create_at'] = $now;
     $data['update_at'] = $now;
 
-    Product::create(array_merge(
-        $request->all(),
-        ['user_id' => auth()->id()]
-    ));
+    Product::create($data);
 
     return redirect()->route('products.index')->with('success', 'Thêm sản phẩm thành công!');
-    }
+}
+
 
     public function edit(Product $product)
     {
@@ -105,13 +107,17 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if (!auth()->user()->roles->contains('name', 'admin')) {
-    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-}
-        $product->delete();
-
-        return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
+         if (!auth()->user()->roles->contains('name', 'admin')) {
+        return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
     }
+    $freshProduct = Product::find($product->id);
+    if (!$freshProduct) {
+        return back()->with('error', 'Xóa không hợp lệ. Sản phẩm không tồn tại hoặc đã bị xóa.');
+    }
+    $freshProduct->delete();
+    return redirect()->route('products.index')->with('success', 'Xóa sản phẩm thành công.');
+    }
+    
     public function printPDF()
     {
         $products = Product::where('user_id', auth()->id())->get();
@@ -119,16 +125,16 @@ class ProductController extends Controller
         $pdf = PDF::loadView('products.print', compact('products'));
         return $pdf->download('danh_sach_san_pham.pdf');
     }
-    public function show(Product $product)
+   public function show($id)
 {
-    // Có thể kiểm tra user_id để đảm bảo user chỉ xem sản phẩm của mình
-    if ($product->user_id !== auth()->id()) {
-        abort(403); // Không có quyền truy cập
+     $product = Product::find($id);
+    if (!$product) {
+        return response()->view('errors.404.products', [], 404);
     }
-
     return view('products.show', compact('product'));
 }
 }
+
 
 
 

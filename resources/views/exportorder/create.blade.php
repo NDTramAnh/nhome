@@ -13,18 +13,13 @@
 <style>
     #error-alert {
         background-color: #f8d7da;
-        /* Màu đỏ nhạt */
         color: #842029;
-        /* Màu chữ đỏ đậm */
         border: 1px solid #f5c2c7;
-        /* Viền đỏ nhạt */
         padding: 10px 15px;
         border-radius: 5px;
         font-size: 0.9rem;
         max-width: 400px;
-        /* Giới hạn chiều rộng */
         margin: 10px auto;
-        /* Căn giữa và cách trên dưới */
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         line-height: 1.4;
     }
@@ -32,7 +27,6 @@
     #error-alert ul {
         margin: 0;
         padding-left: 20px;
-        /* Khoảng cách bullet */
     }
 
     #error-alert li {

@@ -154,6 +154,13 @@ public function updateUser($id)
     $user = User::findOrFail($id);
     $roles = Role::all();
     $userRoles = $user->roles->pluck('id')->toArray();
+    // Tìm user theo ID
+    $user = User::find($id);
+
+    // Nếu không tìm thấy user (đã xoá ở tab khác)
+    if (!$user) {
+        return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
+    }
 
     return view('users.update', compact('user', 'roles', 'userRoles'));
 }
@@ -170,13 +177,18 @@ public function updateUser($id)
     }
 
     $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email',
-        'password' => 'nullable|min:6|confirmed',
-        'roles' => 'nullable|array'
-        ], [
+    'name' => 'required|string|max:255',
+    'email' => 'required|email',
+    'password' => 'nullable|min:6|confirmed',
+    'roles' => 'nullable|array',
+], [
+    'name.required' => 'Vui lòng nhập tên.',
+    'email.required' => 'Vui lòng nhập email.',
+    'email.email' => 'Email không hợp lệ.',
+    'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
     'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
-    ]);
+]);
+
     
 
     $user = User::findOrFail($id);
@@ -212,7 +224,7 @@ public function updateUser($id)
                              ->orWhere('email', 'like', "%{$keyword}%");
             })
             ->with('roles')
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
 
         return view('users.list', ['users' => $users]);
