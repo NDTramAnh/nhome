@@ -9,6 +9,7 @@ use App\Models\Supplier;
 use App\Models\ImportOrdersDetail;
 use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class ImportOrderController extends Controller
 {
@@ -27,11 +28,19 @@ class ImportOrderController extends Controller
 
     public function export($id)
     {
-        $order = ImportOrder::with(['supplier', 'user', 'details.product'])->findOrFail($id);
+        $order = ImportOrder::with(['supplier', 'user', 'details.product'])->find($id);
 
-        $pdf = Pdf::loadView('import.export_pdf', compact('order'));
+        if (!$order) {
+            // Trả về trang lỗi riêng cho phiếu nhập (import)
+            return response()->view('errors.404_import', [], 404);
+            // Nếu bạn đặt file blade ở thư mục con import, dùng 'import.404_import'
+            // return response()->view('import.404_import', [], 404);
+        }
+
+        $pdf = PDF::loadView('import.export_pdf', compact('order'));
         return $pdf->stream('phieu_nhap_' . $order->id_import . '.pdf');
     }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -142,8 +151,8 @@ class ImportOrderController extends Controller
             ->where('user_id', $request->user_id)
             ->where('import_date', $request->import_date)
             ->where('total_price', $total)
-            
-           
+
+
             ->exists();
 
         if ($exists) {
@@ -210,20 +219,20 @@ class ImportOrderController extends Controller
 
     public function destroy($id)
     {
-
-        if (!auth()->user()->roles->contains('name', 'admin')) {
-    return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
-}
-        $order = ImportOrder::findOrFail($id);
-
-        $order = ImportOrder::find($id);
-
-        if (!$order) {
-            return redirect()->route('import.page')->with('error', 'Phiếu nhập không tồn tại hoặc đã bị xóa.');
+        if (!Auth::user()->roles->contains('name', 'admin')) {
+            return back()->with('error', 'Bạn không có quyền thực hiện hành động này.');
         }
 
+        $order = ImportOrder::with('details')->find($id);
 
+        if (!$order) {
+            // Trả về trang lỗi 404 riêng cho phiếu nhập
+            return response()->view('errors.404_import', [], 404);
+            // Nếu file nằm trong thư mục import, thì:
+            // return response()->view('import.404_import', [], 404);
+        }
 
+        // Xóa chi tiết trước, rồi xóa phiếu nhập
         $order->details()->delete();
         $order->delete();
 

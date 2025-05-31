@@ -3,51 +3,9 @@
 @section('main-content')
 
 
-  @if (session('success'))
-    <div class="alert alert-success">
-    {{ session('success') }}
-    </div>
-  @endif
-  {{-- Main Content --}}
-
   <div class="d-flex justify-content-between align-items-center mb-2">
     <h5 class="mb-0">Import Orders</h5>
-    {{-- Flash Messages --}}
-    @if(session('success'))
-    <div id="toast-message" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    font-weight: bold;
-    z-index: 9999;
-    opacity: 1;
-    transition: opacity 0.5s ease;">
-    ✅ {{ session('success') }}
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div id="toast-message" style="
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: #f44336;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    font-weight: bold;
-    z-index: 9999;
-    opacity: 1;
-    transition: opacity 0.5s ease;">
-    ❌ {{ session('error') }}
-    </div>
-    @endif
+ 
 
     <script>
     setTimeout(() => {

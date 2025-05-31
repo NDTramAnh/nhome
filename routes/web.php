@@ -75,6 +75,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 
 
 
+
 Route::get('/', function () {
     return view('welcome');
 });
