@@ -39,7 +39,7 @@
         <tr>
             <td>{{ $order->id }}</td>
             <td>{{ $order->id_customer }}</td>
-            <td>{{ $order->id_user }}</td>
+            <td>{{ $order->user->name }}</td>
             <td>{{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y') }}</td>
             <td>{{ number_format($order->total_price, 0, ',', '.') }}</td>
             <td>

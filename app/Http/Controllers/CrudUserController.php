@@ -119,18 +119,23 @@ class CrudUserController extends Controller
      */
     public function deleteUser($id)
     {
-        $user = User::find($id);
-        // if (!$user) {
-        //     abort(404);
-        // }
-        // Kiểm tra nếu người đăng nhập không có vai trò admin
+        // Kiểm tra quyền admin
         if (!Auth::user()->roles->contains('name', 'admin')) {
-            return redirect()->route('users.list')->with('error', 'Bạn không có quyền chỉnh sửa user.');
+            return redirect()->route('users.list')->with('error', 'Bạn không có quyền xoá user.');
         }
 
+        // Tìm user theo ID
+        $user = User::find($id);
+
+        // Nếu không tìm thấy user (đã xoá ở tab khác)
+        if (!$user) {
+            return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
+        }
+
+        // Xoá user
         $user->delete();
 
-        return redirect("list")->withSuccess('User deleted successfully!');
+        return redirect()->route('users.list')->with('success', 'User đã được xoá thành công!');
     }
 
 
@@ -138,18 +143,18 @@ class CrudUserController extends Controller
      * Form update user page
      */
 
-   public function updateUser($id)
-{
-    $user = User::find($id);
-    if (!$user) {
-        return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
+    public function updateUser($id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return redirect()->route('users.list')->with('error', 'User này không tồn tại hoặc đã bị xoá.');
+        }
+
+        $roles = Role::all();
+        $userRoles = $user->roles->pluck('id')->toArray();
+
+        return view('users.update', compact('user', 'roles', 'userRoles'));
     }
-
-    $roles = Role::all();
-    $userRoles = $user->roles->pluck('id')->toArray();
-
-    return view('users.update', compact('user', 'roles', 'userRoles'));
-}
 
 
 
@@ -164,18 +169,18 @@ class CrudUserController extends Controller
         }
 
 
-    $request->validate([
-    'name' => 'required|string|max:255',
-    'email' => 'required|email',
-    'password' => 'nullable|min:6|confirmed',
-    'roles' => 'nullable|array',
-], [
-    'name.required' => 'Vui lòng nhập tên.',
-    'email.required' => 'Vui lòng nhập email.',
-    'email.email' => 'Email không hợp lệ.',
-    'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
-    'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
-]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'password' => 'nullable|min:6|confirmed',
+            'roles' => 'nullable|array',
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.confirmed' => 'Mật khẩu nhập lại không khớp.',
+        ]);
 
         $user = User::findOrFail($id);
         $user->name = $request->name;
@@ -201,23 +206,23 @@ class CrudUserController extends Controller
      */
 
     public function listUser(Request $request)
-{
-    if (!Auth::check()) {
-        return redirect("login")->with('error', 'You are not allowed to access');
-    }
+    {
+        if (!Auth::check()) {
+            return redirect("login")->with('error', 'You are not allowed to access');
+        }
 
-    $keyword = $request->input('keyword');
+        $keyword = $request->input('keyword');
 
-    $users = User::when($keyword, function ($query, $keyword) {
+        $users = User::when($keyword, function ($query, $keyword) {
             return $query->where('name', 'like', "%{$keyword}%")
-                         ->orWhere('email', 'like', "%{$keyword}%");
+                ->orWhere('email', 'like', "%{$keyword}%");
         })
-        ->with('roles')
-        ->paginate(3)
-        ->withQueryString();
+            ->with('roles')
+            ->paginate(3)
+            ->withQueryString();
 
-    return view('users.list', ['users' => $users]);
-}
+        return view('users.list', ['users' => $users]);
+    }
 
 
     /**

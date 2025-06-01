@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="container text-center mt-5">
-        <h2 class="mt-3">id không tồn tại</h2>
+        <h2 class="mt-3">ID không tồn tại</h2>
         <p class="text-muted">Đường dẫn bạn truy cập không hợp lệ hoặc đã bị xoá.</p>
 
         <a href="{{ route('exportorder.index') }}" class="btn btn-primary mt-4">Quay về danh sách phiếu xuất</a>

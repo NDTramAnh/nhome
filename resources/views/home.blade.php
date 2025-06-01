@@ -32,7 +32,7 @@
                     <a class="nav-link {{ request()->routeIs('export.orders') ? 'active' : '' }}" href="{{ route('export.orders') }}">Export_Orders</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('users') ? 'active' : '' }}" href="{{ route('users') }}">Users</a>
+                    <a class="nav-link {{ request()->routeIs('list') ? 'active' : '' }}" href="{{ route('users.list') }}">Users</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('suppliers') ? 'active' : '' }}" href="{{ route('suppliers.index') }}">Suppliers</a>
